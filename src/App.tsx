@@ -4,11 +4,13 @@ import { PrototypeSwitcher } from './prototype/PrototypeSwitcher'
 import { VariantA } from './prototype/VariantA'
 import { VariantB } from './prototype/VariantB'
 import { VariantC } from './prototype/VariantC'
+import { VariantD } from './prototype/VariantD'
 
 const variants = [
   { key: 'A', name: '積雨雲' },
   { key: 'B', name: '夜泳池' },
   { key: 'C', name: '白磁磚泳池' },
+  { key: 'D', name: '天空 RPG（A＋C）' },
 ]
 
 function App() {
@@ -29,6 +31,7 @@ function App() {
       {variant === 'A' && <VariantA />}
       {variant === 'B' && <VariantB />}
       {variant === 'C' && <VariantC />}
+      {variant === 'D' && <VariantD />}
       <PrototypeSwitcher variants={variants} current={variant} onChange={change} />
     </>
   )

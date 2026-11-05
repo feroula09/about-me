@@ -1,0 +1,56 @@
+/* PROTOTYPE variant D「天空 RPG」: overrides on top of VariantA.css + VariantC.css */
+
+/* the intro dialog sits inside the hero instead of sticking to the bottom */
+.vd .vd-dialog {
+  position: relative;
+  bottom: auto;
+  max-width: 520px;
+  margin: 8px auto 28px;
+  text-align: left;
+  text-shadow: none;
+}
+
+.vd-rpg {
+  position: relative;
+  padding: 72px 16px 0;
+  overflow: hidden;
+  color: #1d2b53;
+}
+
+.vd-cloud {
+  position: absolute;
+  opacity: 0.85;
+  max-width: none;
+}
+.vd-cloud-1 {
+  top: 20px;
+  left: -60px;
+  animation: va-drift 50s linear infinite;
+}
+.vd-cloud-2 {
+  top: 45%;
+  right: -40px;
+  animation: va-drift 65s linear infinite reverse;
+}
+
+.vd .vc-screen {
+  z-index: 1;
+}
+.vd-name {
+  font: 32px var(--pixel);
+  margin: 0;
+  color: #f6f8fb;
+}
+
+/* a row of clouds closes the page instead of empty water */
+.vd-cloud-floor {
+  display: flex;
+  justify-content: center;
+  margin: 72px -80px 0;
+  padding-bottom: 72px;
+  gap: 0;
+}
+.vd-cloud-floor svg {
+  flex: none;
+  margin: 0 -40px;
+}
