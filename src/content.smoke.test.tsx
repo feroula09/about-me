@@ -14,4 +14,8 @@ it('用真正的內容渲染頁面：看得到 Camila 和 about-me 作品', () =
     'href',
     'https://github.com/feroula09/about-me',
   )
+  expect(screen.getByRole('link', { name: '飛過去看看' })).toHaveAttribute(
+    'href',
+    'https://camila.blog-camila.workers.dev/',
+  )
 })
