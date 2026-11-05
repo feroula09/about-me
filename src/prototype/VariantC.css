@@ -1,0 +1,241 @@
+/* PROTOTYPE variant C「白磁磚泳池」 */
+.vc {
+  position: relative;
+  min-height: 100vh;
+  padding: 32px 16px 0;
+  overflow: hidden;
+  color: #1d2b53;
+  background: #eef3f7;
+}
+
+/* white tiles on the top half, clear pool water on the bottom half */
+.vc-tiles {
+  position: absolute;
+  inset: 0 0 45% 0;
+  background-color: #f6f8fb;
+  background-image:
+    linear-gradient(#cfd9e6 2px, transparent 2px),
+    linear-gradient(90deg, #cfd9e6 2px, transparent 2px);
+  background-size: 32px 32px;
+}
+.vc-water {
+  position: absolute;
+  inset: 55% 0 0 0;
+  background:
+    repeating-linear-gradient(170deg, rgba(255, 255, 255, 0.08) 0 6px, transparent 6px 46px),
+    linear-gradient(#3fb4f0, #1662c4 60%, #0b3b8a);
+  border-top: 8px solid #ffffff;
+  box-shadow: inset 0 8px 0 #bfe9ff;
+  animation: vc-wave 6s linear infinite;
+  background-size: 200% 100%, 100% 100%;
+}
+@keyframes vc-wave {
+  to {
+    background-position: 200% 0, 0 0;
+  }
+}
+
+.vc-screen {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.vc-window {
+  background: #1d2b53;
+  color: #f6f8fb;
+  border: 4px solid #f6f8fb;
+  outline: 4px solid #1d2b53;
+  padding: 20px;
+  box-shadow: 8px 8px 0 rgba(29, 43, 83, 0.35);
+}
+.vc-window-title {
+  font: 14px var(--pixel);
+  letter-spacing: 3px;
+  color: #7fe3ff;
+  margin: 0 0 16px;
+}
+
+.vc-status-head {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.vc-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 40px var(--pixel);
+  background: #f6f8fb;
+  color: #e0475b;
+  flex: none;
+}
+.vc h1 {
+  font: 32px var(--pixel);
+  margin: 0;
+}
+.vc-class {
+  margin: 4px 0 0;
+  color: #ffd65a;
+  font-family: var(--pixel);
+}
+
+.vc-stats {
+  margin: 0 0 16px;
+  display: grid;
+  gap: 8px;
+}
+.vc-stats div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px dashed #3d4f80;
+  padding-bottom: 4px;
+}
+.vc-stats dt {
+  font-family: var(--pixel);
+  color: #7fe3ff;
+}
+.vc-stats dd {
+  margin: 0;
+}
+
+.vc-sub {
+  font: 14px var(--pixel);
+  color: #7fe3ff;
+  margin: 0 0 8px;
+}
+.vc-portals {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.vc-portals a {
+  font-family: var(--pixel);
+  text-decoration: none;
+}
+.vc-portals a:hover {
+  color: #ffd65a;
+}
+
+.vc-slots {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.vc-slots button,
+.vc-slot-empty {
+  width: 100%;
+  min-height: 64px;
+  display: grid;
+  place-items: center;
+  font: 14px var(--pixel);
+  background: #2a3a6b;
+  color: #f6f8fb;
+  border: 2px solid #3d4f80;
+}
+.vc-slots button {
+  cursor: pointer;
+}
+.vc-slots button.is-picked {
+  border-color: #ffd65a;
+  box-shadow: inset 0 0 0 2px #ffd65a;
+}
+.vc-slot-icon {
+  color: #ffd65a;
+}
+.vc-slot-empty {
+  color: #3d4f80;
+}
+
+.vc-item-detail {
+  border-top: 2px solid #3d4f80;
+  padding-top: 12px;
+}
+.vc-item-detail h3 {
+  font: 18px var(--pixel);
+  margin: 0 0 6px;
+  color: #ffd65a;
+}
+.vc-item-detail p {
+  margin: 0 0 12px;
+}
+.vc-actions a {
+  font-family: var(--pixel);
+  text-decoration: none;
+  padding: 4px 12px;
+  background: #f6f8fb;
+  color: #1d2b53;
+  margin-right: 8px;
+}
+
+/* RPG dialog box with a glitchy border */
+.vc-dialog {
+  position: sticky;
+  bottom: 72px;
+  max-width: 980px;
+  margin: 32px auto 72px;
+  padding: 16px 20px;
+  background: rgba(29, 43, 83, 0.92);
+  color: #fff;
+  border: 4px solid #2a1b4f;
+  outline: 2px solid #f6f8fb;
+  animation: vc-glitch 3.5s steps(1) infinite;
+}
+.vc-speaker {
+  position: absolute;
+  top: -18px;
+  left: 16px;
+  font: 14px var(--pixel);
+  background: #e0475b;
+  padding: 2px 10px;
+}
+.vc-dialog p {
+  margin: 0;
+  font: 18px/1.6 var(--pixel);
+  min-height: 1.6em;
+}
+.vc-caret {
+  margin-left: 8px;
+  font-size: 12px;
+  animation: vc-blink 1s steps(2) infinite;
+}
+@keyframes vc-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes vc-glitch {
+  0%, 88%, 100% {
+    box-shadow: none;
+    translate: 0 0;
+  }
+  90% {
+    box-shadow: -4px 0 0 #ff3b5c, 4px 0 0 #36f28a;
+    translate: 2px 0;
+  }
+  94% {
+    box-shadow: 3px 0 0 #ff3b5c, -3px 0 0 #36f28a;
+    translate: -2px 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .vc-screen {
+    grid-template-columns: 1fr;
+  }
+  .vc-slots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

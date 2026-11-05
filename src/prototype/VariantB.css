@@ -1,0 +1,162 @@
+/* PROTOTYPE variant B「夜泳池」 */
+.vb {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  background:
+    radial-gradient(ellipse at 70% 0%, rgba(255, 214, 90, 0.18), transparent 45%),
+    linear-gradient(#0f3f86 0%, #0a2a5e 45%, #050f26 100%);
+  color: #d8ecff;
+  overflow: hidden;
+}
+
+.vb-bubbles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.vb-bubbles span {
+  position: absolute;
+  bottom: -20px;
+  border: 2px solid rgba(127, 227, 255, 0.55);
+  border-radius: 50%;
+  animation: vb-rise linear infinite;
+}
+@keyframes vb-rise {
+  to {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
+
+.vb-side {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  min-height: 100vh;
+  padding: 40px 28px;
+  background: rgba(3, 12, 32, 0.6);
+  border-right: 4px solid #7fe3ff;
+  box-shadow: 4px 0 24px rgba(127, 227, 255, 0.25);
+  z-index: 1;
+}
+
+.vb-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 48px var(--pixel);
+  color: #050f26;
+  background: #7fe3ff;
+  box-shadow: 0 0 0 4px #050f26, 0 0 0 8px #7fe3ff, 0 0 32px #7fe3ff;
+  margin-bottom: 20px;
+}
+
+.vb h1 {
+  font: 40px var(--pixel);
+  margin: 0 0 8px;
+  color: #fff;
+  text-shadow: 0 0 12px #7fe3ff;
+}
+.vb-side p {
+  margin: 0 0 28px;
+  line-height: 1.7;
+}
+.vb-side h2 {
+  font: 16px var(--pixel);
+  color: #ffd65a;
+  margin: 0 0 8px;
+}
+.vb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: grid;
+  gap: 6px;
+}
+.vb-list li::before {
+  content: '◆ ';
+  color: #7fe3ff;
+}
+.vb-list a {
+  text-decoration: none;
+  border-bottom: 2px dotted #7fe3ff;
+}
+
+.vb-main {
+  position: relative;
+  padding: 56px 32px 120px;
+  z-index: 1;
+}
+.vb-caption {
+  font: 20px var(--pixel);
+  letter-spacing: 6px;
+  color: #fff;
+  margin: 0 0 40px;
+  text-align: center;
+}
+.vb-works-title {
+  font: 28px var(--pixel);
+  color: #fff;
+  margin: 0 0 24px;
+}
+.vb-works {
+  display: grid;
+  gap: 32px;
+}
+.vb-work {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  max-width: 560px;
+  padding: 20px;
+  border: 2px solid rgba(127, 227, 255, 0.5);
+  background: rgba(5, 15, 38, 0.55);
+  animation: vb-float 6s ease-in-out infinite;
+}
+@keyframes vb-float {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.vb-jelly {
+  flex: none;
+  filter: drop-shadow(0 0 10px #7fe3ff);
+}
+.vb-work h3 {
+  font: 20px var(--pixel);
+  margin: 0 0 6px;
+  color: #7fe3ff;
+}
+.vb-work p {
+  margin: 0 0 12px;
+}
+.vb-actions a {
+  font-family: var(--pixel);
+  text-decoration: none;
+  padding: 4px 12px;
+  border: 2px solid #ffd65a;
+  color: #ffd65a;
+  margin-right: 8px;
+}
+
+@media (max-width: 720px) {
+  .vb {
+    grid-template-columns: 1fr;
+  }
+  .vb-side {
+    position: relative;
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 4px solid #7fe3ff;
+  }
+  .vb-main {
+    padding: 40px 16px 120px;
+  }
+  .vb-work {
+    flex-direction: column;
+  }
+}

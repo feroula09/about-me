@@ -1,0 +1,194 @@
+/* PROTOTYPE variant A「積雨雲」 */
+.va {
+  min-height: 100vh;
+  background: linear-gradient(#0d5fd0 0%, #2f86e8 55%, #8cc3f5 100%);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.va-hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  /* faint pixel scanlines across the sky */
+  background-image: repeating-linear-gradient(0deg, transparent 0 6px, rgba(255, 255, 255, 0.06) 6px 8px);
+}
+
+.va-cloud {
+  position: absolute;
+  max-width: none;
+}
+.va-cloud-big {
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.95;
+  animation: va-bob 9s ease-in-out infinite;
+}
+.va-cloud-left {
+  top: 14%;
+  left: -40px;
+  animation: va-drift 40s linear infinite;
+}
+.va-cloud-right {
+  top: 30%;
+  right: 12%;
+  animation: va-drift 55s linear infinite reverse;
+}
+
+@keyframes va-bob {
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+@keyframes va-drift {
+  to {
+    translate: 120px 0;
+  }
+}
+
+.va-meteor {
+  position: absolute;
+  width: 140px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #fff);
+  transform: rotate(-25deg);
+  opacity: 0;
+  animation: va-meteor 7s linear infinite;
+}
+.va-meteor-1 { top: 12%; left: 10%; }
+.va-meteor-2 { top: 22%; left: 60%; animation-delay: 2.5s; }
+.va-meteor-3 { top: 45%; left: 30%; animation-delay: 5s; }
+
+@keyframes va-meteor {
+  0% { opacity: 0; translate: 0 0; }
+  4% { opacity: 1; }
+  12% { opacity: 0; translate: 220px -100px; }
+  100% { opacity: 0; }
+}
+
+.va-hero-text {
+  position: relative;
+  text-align: center;
+  padding: 0 16px;
+  text-shadow: 0 3px 0 rgba(13, 60, 140, 0.6);
+}
+
+.va-avatar {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ffd9cf;
+  color: #0d5fd0;
+  font: 56px var(--pixel);
+  border: 6px solid #fff;
+  text-shadow: none;
+}
+
+.va h1 {
+  font: 64px/1.1 var(--pixel);
+  margin: 0 0 12px;
+  letter-spacing: 4px;
+}
+.va-intro {
+  font-size: 18px;
+  margin: 0 0 32px;
+}
+.va-scroll {
+  font-family: var(--pixel);
+  animation: va-bob-arrow 1.4s steps(2) infinite;
+  display: inline-block;
+}
+@keyframes va-bob-arrow {
+  50% { transform: translateY(6px); }
+}
+
+.va-body {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 16px 120px;
+  display: grid;
+  gap: 48px;
+}
+
+.va h2 {
+  font: 24px var(--pixel);
+  margin: 0 0 16px;
+  text-align: center;
+}
+.va h2::before,
+.va h2::after {
+  content: ' ✦ ';
+  color: #ffd9cf;
+}
+
+.va-tags {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.va-tags li {
+  background: #fff;
+  color: #0d5fd0;
+  padding: 6px 16px;
+  font-family: var(--pixel);
+  box-shadow: 4px 4px 0 #0b3f8f;
+}
+
+.va-work {
+  display: flex;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #123;
+  padding: 16px;
+  box-shadow: 6px 6px 0 #0b3f8f;
+  flex-wrap: wrap;
+}
+.va-work-cover {
+  flex: 0 0 140px;
+  height: 100px;
+  display: grid;
+  place-items: center;
+  background: #2f86e8;
+  overflow: hidden;
+}
+.va-work-text {
+  flex: 1 1 220px;
+}
+.va-work h3 {
+  font: 20px var(--pixel);
+  margin: 0 0 6px;
+  color: #0d5fd0;
+}
+.va-work p {
+  margin: 0 0 12px;
+}
+.va-work-actions a,
+.va-links a {
+  display: inline-block;
+  font-family: var(--pixel);
+  text-decoration: none;
+  padding: 6px 14px;
+  background: #0d5fd0;
+  color: #fff;
+  box-shadow: 3px 3px 0 #0b3f8f;
+}
+.va-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.va-links a {
+  background: #fff;
+  color: #0d5fd0;
+}
