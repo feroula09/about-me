@@ -1,0 +1,10 @@
+// Cloudflare Workers 部署設定：純靜態網頁，只上傳 build 出來的 dist 資料夾
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  // 要和 Cloudflare 後台的 Worker 名稱一致，網址會是 camila.<帳號子網域>.workers.dev
+  "name": "camila",
+  "compatibility_date": "2026-11-05",
+  "assets": {
+    "directory": "./dist",
+  },
+}
