@@ -1,184 +1,389 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+/* A2「積雨雲・俏皮版」 */
+.page {
+  --deep: #0d5fd0;
+  --sky: #2f86e8;
+  --light: #8cc3f5;
+  --shadow: #0b3f8f;
+  --peach: #ffd9cf;
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+  min-height: 100vh;
+  background: linear-gradient(var(--deep) 0%, var(--sky) 55%, var(--light) 100%);
+  color: #fff;
+  overflow-x: hidden;
 }
 
-.hero {
+/* ── 天空 ── */
+
+.sky {
   position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
+  min-height: 100svh;
+  display: grid;
   place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+  overflow: hidden;
+  cursor: crosshair;
+  /* 淡淡的像素掃描線 */
+  background-image: repeating-linear-gradient(0deg, transparent 0 6px, rgba(255, 255, 255, 0.06) 6px 8px);
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+.weather {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  margin: 0;
+  padding: 4px 10px;
+  font: 14px var(--pixel);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--deep);
+  box-shadow: 3px 3px 0 var(--shadow);
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
+.cloud {
+  position: absolute;
   padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
+  border: 0;
+  background: none;
+  line-height: 0;
+  cursor: pointer;
+}
+.cloud:hover svg,
+.cloud:focus-visible svg {
+  filter: brightness(1.05) drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+}
+.cloud:focus-visible {
+  outline: 3px dashed #fff;
+  outline-offset: 4px;
+}
+.cloud:active {
+  scale: 0.97;
+}
+.cloud-big {
+  bottom: -40px;
+  left: 50%;
+  opacity: 0.95;
+  translate: -50% 0;
+  animation: bob 9s ease-in-out infinite;
+}
+.cloud-left {
+  top: 14%;
+  left: -40px;
+  animation: drift 40s linear infinite;
+}
+.cloud-right {
+  top: 30%;
+  right: 12%;
+  animation: drift 55s linear infinite reverse;
+}
 
-  .logo {
-    height: 18px;
+@keyframes bob {
+  50% {
+    translate: -50% -10px;
   }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
+}
+@keyframes drift {
+  to {
+    transform: translateX(120px);
   }
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
+/* 自動劃過的流星 */
+.meteor {
+  position: absolute;
+  width: 140px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #fff);
+  rotate: -25deg;
+  opacity: 0;
+  pointer-events: none;
+  animation: meteor 7s linear infinite;
+}
+.meteor-1 {
+  top: 12%;
+  left: 10%;
+}
+.meteor-2 {
+  top: 22%;
+  left: 60%;
+  animation-delay: 2.5s;
+}
+.meteor-3 {
+  top: 45%;
+  left: 30%;
+  animation-delay: 5s;
+}
+
+@keyframes meteor {
+  0% {
+    opacity: 0;
+    translate: 0 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0;
+    translate: 220px -100px;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
-.ticks {
+.sky-text {
   position: relative;
+  padding: 0 16px;
+  text-align: center;
+  text-shadow: 0 3px 0 rgba(13, 60, 140, 0.6);
+}
+
+.avatar {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 16px;
+  border: 6px solid #fff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  object-fit: cover;
+  background: var(--peach);
+  color: var(--deep);
+  font: 56px var(--pixel);
+  text-shadow: none;
+}
+
+.sky h1 {
+  margin: 0 0 12px;
+  font: 64px/1.1 var(--pixel);
+  letter-spacing: 4px;
+}
+
+.intro {
+  margin: 0 0 32px;
+  font-size: 18px;
+}
+
+.scroll-hint {
+  display: inline-block;
+  font-family: var(--pixel);
+  animation: hop 1.4s steps(2) infinite;
+}
+@keyframes hop {
+  50% {
+    translate: 0 6px;
+  }
+}
+
+/* 點雲、點天空冒出的對話框 */
+.bubble {
+  position: absolute;
+  z-index: 5;
+  translate: -50% calc(-100% - 12px);
+  padding: 6px 12px;
+  white-space: nowrap;
+  font: 15px var(--pixel);
+  color: var(--deep);
+  background: #fff;
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    4px 4px 0 3px var(--shadow);
+  text-shadow: none;
+  pointer-events: none;
+  animation: pop 0.25s steps(3);
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 10px;
+  height: 10px;
+  translate: -50% 0;
+  background: #fff;
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+@keyframes pop {
+  from {
+    scale: 0.6;
+  }
+}
+
+/* 許願流星：從左下往點擊位置劃過去 */
+.wish-meteor {
+  position: absolute;
+  z-index: 4;
+  width: 160px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #fff 80%, var(--peach));
+  transform-origin: right center;
+  translate: -100% 0;
+  rotate: -25deg;
+  pointer-events: none;
+  animation: shoot 0.9s ease-out forwards;
+}
+@keyframes shoot {
+  from {
+    opacity: 1;
+    translate: calc(-100% - 160px) 75px;
+  }
+  to {
+    opacity: 0;
+    translate: -100% 0;
+  }
+}
+
+.hint {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  margin: 0;
+  font: 13px var(--pixel);
+  opacity: 0.85;
+}
+
+/* ── 下半部內容 ── */
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 16px 120px;
+  display: grid;
+  gap: 48px;
+}
+
+.content h2 {
+  margin: 0 0 16px;
+  font: 24px var(--pixel);
+  text-align: center;
+}
+.content h2::before,
+.content h2::after {
+  content: ' ✦ ';
+  color: var(--peach);
+}
+
+.caption {
+  margin: -8px 0 16px;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.tags {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.tags li {
+  padding: 6px 16px;
+  font-family: var(--pixel);
+  background: #fff;
+  color: var(--deep);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.works {
+  display: grid;
+  gap: 24px;
+}
+
+.work {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #123;
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+.work-cover {
+  flex: 0 0 140px;
+  height: 100px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--sky);
+}
+.work-cover img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.work-text {
+  flex: 1 1 220px;
+}
+.work h3 {
+  margin: 0 0 6px;
+  font: 20px var(--pixel);
+  color: var(--deep);
+}
+.work p {
+  margin: 0 0 12px;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+.buttons,
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.links {
+  justify-content: center;
+  gap: 16px;
+}
+.buttons a,
+.links a {
+  display: inline-block;
+  padding: 6px 14px;
+  font-family: var(--pixel);
+  text-decoration: none;
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+.buttons a {
+  background: var(--deep);
+  color: #fff;
+}
+.links a {
+  background: #fff;
+  color: var(--deep);
+}
+.buttons a:hover,
+.links a:hover {
+  translate: 1px 1px;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+.footer {
+  font: 14px var(--pixel);
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* ── 手機 ── */
+
+@media (max-width: 720px) {
+  .sky h1 {
+    font-size: 48px;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+  /* 手機上提示會壓在大雲上，改成跟天氣標籤一樣的白底標籤才看得清楚 */
+  .hint {
+    right: auto;
+    left: 50%;
+    bottom: 72px;
+    translate: -50% 0;
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 4px 10px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--deep);
+    box-shadow: 3px 3px 0 var(--shadow);
+    opacity: 1;
+  }
+  .work-cover {
+    flex-basis: 100%;
   }
 }
