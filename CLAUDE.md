@@ -1,3 +1,7 @@
+## Deploy
+
+Pushing to `main` deploys the site: Cloudflare Workers Builds is linked to this repo. Run `npm run check` (lint, tests, build) before every push.
+
 ## Agent skills
 
 ### Issue tracker
