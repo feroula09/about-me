@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react'
 import './App.css'
 import type { Link, Profile, Work } from './content/types'
+import { HobbyIcon } from './HobbyIcon'
 import { PixelCloud } from './PixelCloud'
 import { Sky } from './Sky'
 
@@ -7,6 +9,27 @@ type Props = {
   profile: Profile
   links: Link[]
   works: Work[]
+}
+
+/** 像素風小視窗：深藍標題列＋白色內容。 */
+function Window({ title, caption, children }: { title: string; caption: string; children: ReactNode }) {
+  return (
+    <section className="window">
+      <div className="window-bar">
+        <PixelCloud scale={1.5} />
+        <h2>{title}</h2>
+        <span className="window-dots" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+      </div>
+      <div className="window-body">
+        <p className="caption">{caption}</p>
+        {children}
+      </div>
+    </section>
+  )
 }
 
 function App({ profile, links, works }: Props) {
@@ -17,19 +40,18 @@ function App({ profile, links, works }: Props) {
       <Sky profile={profile} />
 
       <main className="content">
-        <section>
-          <h2>最近沉迷</h2>
-          <p className="caption">沉迷程度：99%，剩下 1% 用來睡覺</p>
+        <Window title="最近沉迷" caption="沉迷程度：99%，剩下 1% 用來睡覺">
           <ul className="tags">
             {profile.hobbies.map((hobby) => (
-              <li key={hobby}>{hobby}</li>
+              <li key={hobby.label}>
+                <HobbyIcon icon={hobby.icon} />
+                {hobby.label}
+              </li>
             ))}
           </ul>
-        </section>
+        </Window>
 
-        <section>
-          <h2>雲上的作品</h2>
-          <p className="caption">目前只有一朵，之後會越飄越多</p>
+        <Window title="雲上的作品" caption="目前只有一朵，之後會越飄越多">
           <div className="works">
             {newestFirst.map((work) => (
               <article key={work.name} className="work">
@@ -37,20 +59,21 @@ function App({ profile, links, works }: Props) {
                   {work.cover ? (
                     <img src={work.cover} alt={`${work.name} 的封面`} />
                   ) : (
-                    <PixelCloud scale={5} label={`${work.name} 的預設封面`} />
+                    <PixelCloud scale={7} label={`${work.name} 的預設封面`} />
                   )}
+                  <span className="work-date">{work.date}</span>
                 </div>
                 <div className="work-text">
                   <h3>{work.name}</h3>
                   <p>{work.description}</p>
                   <div className="buttons">
                     {work.github && (
-                      <a href={work.github} target="_blank" rel="noreferrer">
+                      <a className="button-solid" href={work.github} target="_blank" rel="noreferrer">
                         偷看原始碼
                       </a>
                     )}
                     {work.site && (
-                      <a href={work.site} target="_blank" rel="noreferrer">
+                      <a className="button-outline" href={work.site} target="_blank" rel="noreferrer">
                         飛過去看看
                       </a>
                     )}
@@ -58,23 +81,45 @@ function App({ profile, links, works }: Props) {
                 </div>
               </article>
             ))}
+            <div className="work-next">
+              <PixelCloud scale={5} />
+              下一朵雲正在路上…
+            </div>
           </div>
-        </section>
+        </Window>
 
-        <section>
-          <h2>丟紙飛機給我</h2>
-          <p className="caption">保證會飛到我手上</p>
+        <Window title="丟紙飛機給我" caption="保證會飛到我手上">
           <div className="links">
             {links.map((link) => (
               <a key={link.url} href={link.url} target="_blank" rel="noreferrer">
-                ✈ {link.label}
+                <span className="link-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round">
+                    <path d="M22 2 11 13" />
+                    <path d="M22 2 15 22l-4-9-9-4 20-7z" />
+                  </svg>
+                </span>
+                <span className="link-text">
+                  {link.label}
+                  {link.handle && <span className="link-handle">{link.handle}</span>}
+                </span>
               </a>
             ))}
           </div>
-        </section>
-
-        <footer className="footer">— 你已經飄到天空的盡頭了 —</footer>
+        </Window>
       </main>
+
+      <footer className="footer">
+        <p>— 你已經飄到天空的盡頭了 —</p>
+        <div className="footer-cloud footer-cloud-1">
+          <PixelCloud scale={20} />
+        </div>
+        <div className="footer-cloud footer-cloud-2">
+          <PixelCloud scale={24} />
+        </div>
+        <div className="footer-cloud footer-cloud-3">
+          <PixelCloud scale={20} />
+        </div>
+      </footer>
     </div>
   )
 }

@@ -1,41 +1,144 @@
-/* A2「積雨雲・俏皮版」 */
+/* D「積雨雲 2.0」：沿用藍天像素風，天空改成階梯色帶，內容放進像素視窗 */
 .page {
   --deep: #0d5fd0;
   --sky: #2f86e8;
   --light: #8cc3f5;
   --shadow: #0b3f8f;
   --peach: #ffd9cf;
+  --ink: #12305c;
+  --muted: #3f5f8f;
+  --pale: #eaf4fd;
 
   min-height: 100vh;
-  background: linear-gradient(var(--deep) 0%, var(--sky) 55%, var(--light) 100%);
-  color: #fff;
+  background: var(--light);
+  color: var(--ink);
   overflow-x: hidden;
+}
+
+/* 白底深藍字的小標籤：天氣、往下飄、提示 */
+.weather,
+.scroll-hint,
+.hint {
+  padding: 4px 12px;
+  font: 15px var(--pixel);
+  background: #fff;
+  color: var(--deep);
+  box-shadow: 3px 3px 0 var(--shadow);
 }
 
 /* ── 天空 ── */
 
 .sky {
   position: relative;
-  min-height: 100svh;
+  min-height: max(100svh, 760px);
   display: grid;
   place-items: center;
+  padding: 96px 16px 240px;
   overflow: hidden;
   cursor: crosshair;
-  /* 淡淡的像素掃描線 */
-  background-image: repeating-linear-gradient(0deg, transparent 0 6px, rgba(255, 255, 255, 0.06) 6px 8px);
+}
+
+.sky-bands {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+.band {
+  flex: 1 1 0;
+}
+.band:last-child {
+  flex-grow: 1.6;
+}
+.dither {
+  flex: 0 0 8px;
+}
+
+.sun {
+  position: absolute;
+  top: 56px;
+  right: 16%;
+  pointer-events: none;
+}
+
+.twinkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  pointer-events: none;
+  animation: twinkle 2.4s steps(2) infinite;
+}
+.twinkle-1 {
+  top: 7%;
+  left: 24%;
+}
+.twinkle-2 {
+  top: 15%;
+  left: 38%;
+  animation-delay: 0.6s;
+}
+.twinkle-3 {
+  top: 21%;
+  left: 64%;
+  animation-delay: 1.2s;
+}
+.twinkle-4 {
+  top: 28%;
+  left: 90%;
+  animation-delay: 1.8s;
+}
+@keyframes twinkle {
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .weather {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 24px;
+  left: 24px;
   z-index: 2;
   margin: 0;
-  padding: 4px 10px;
-  font: 14px var(--pixel);
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--deep);
-  box-shadow: 3px 3px 0 var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+/* 遠處的雲：比較淡、比較小，只是背景 */
+.cloud-far {
+  position: absolute;
+  line-height: 0;
+  opacity: 0.55;
+  pointer-events: none;
+  animation: drift 60s linear infinite alternate;
+}
+.cloud-far-1 {
+  top: 24%;
+  left: 6%;
+}
+.cloud-far-2 {
+  top: 19%;
+  right: 11%;
+  animation-duration: 75s;
+  animation-direction: alternate-reverse;
+}
+
+/* 底部連成地平線的雲 */
+.cloud-floor {
+  position: absolute;
+  line-height: 0;
+  pointer-events: none;
+}
+.cloud-floor-left {
+  left: -90px;
+  bottom: -36px;
+}
+.cloud-floor-right {
+  right: -110px;
+  bottom: -44px;
 }
 
 .cloud {
@@ -58,21 +161,20 @@
   scale: 0.97;
 }
 .cloud-big {
-  bottom: -40px;
+  bottom: -100px;
   left: 50%;
-  opacity: 0.95;
   translate: -50% 0;
   animation: bob 9s ease-in-out infinite;
 }
 .cloud-left {
-  top: 14%;
-  left: -40px;
-  animation: drift 40s linear infinite;
+  top: 42%;
+  left: -36px;
+  animation: drift 40s linear infinite alternate;
 }
 .cloud-right {
-  top: 30%;
-  right: 12%;
-  animation: drift 55s linear infinite reverse;
+  top: 38%;
+  right: 7%;
+  animation: drift 55s linear infinite alternate-reverse;
 }
 
 @keyframes bob {
@@ -102,12 +204,12 @@
   left: 10%;
 }
 .meteor-2 {
-  top: 22%;
-  left: 60%;
+  top: 6%;
+  left: 52%;
   animation-delay: 2.5s;
 }
 .meteor-3 {
-  top: 45%;
+  top: 30%;
   left: 30%;
   animation-delay: 5s;
 }
@@ -131,40 +233,86 @@
 
 .sky-text {
   position: relative;
-  padding: 0 16px;
+  z-index: 1;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   text-align: center;
-  text-shadow: 0 3px 0 rgba(13, 60, 140, 0.6);
+}
+
+.avatar-frame {
+  position: relative;
 }
 
 .avatar {
-  width: 112px;
-  height: 112px;
-  margin: 0 auto 16px;
-  border: 6px solid #fff;
-  border-radius: 50%;
+  width: 148px;
+  height: 148px;
   display: grid;
   place-items: center;
   object-fit: cover;
+  border: 6px solid #fff;
+  box-shadow: 8px 8px 0 var(--shadow);
   background: var(--peach);
   color: var(--deep);
-  font: 56px var(--pixel);
-  text-shadow: none;
+  font: 64px var(--pixel);
+}
+
+.sparkle {
+  position: absolute;
+  animation: twinkle 1.8s steps(2) infinite;
+}
+.sparkle-1 {
+  top: -14px;
+  right: -22px;
+  width: 20px;
+  height: 20px;
+  color: #fff;
+}
+.sparkle-2 {
+  bottom: 18px;
+  left: -26px;
+  color: var(--peach);
+  animation-delay: 0.9s;
 }
 
 .sky h1 {
-  margin: 0 0 12px;
-  font: 64px/1.1 var(--pixel);
-  letter-spacing: 4px;
+  margin: 0;
+  font: 88px/1 var(--pixel);
+  letter-spacing: 6px;
+  color: #fff;
+  text-shadow:
+    3px 3px 0 var(--sky),
+    6px 6px 0 var(--shadow);
 }
 
+/* 自我介紹：從大頭貼冒出來的對話框 */
 .intro {
-  margin: 0 0 32px;
-  font-size: 18px;
+  position: relative;
+  margin: 10px 0 0;
+  padding: 12px 22px;
+  font: 19px/1.6 var(--pixel);
+  color: var(--deep);
+  background: #fff;
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    5px 5px 0 3px var(--shadow);
+}
+.intro::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  translate: -50% 0;
+  background: #fff;
+  box-shadow: -3px -3px 0 var(--shadow);
 }
 
 .scroll-hint {
-  display: inline-block;
-  font-family: var(--pixel);
+  margin-top: 14px;
   animation: hop 1.4s steps(2) infinite;
 }
 @keyframes hop {
@@ -186,7 +334,6 @@
   box-shadow:
     0 0 0 3px var(--shadow),
     4px 4px 0 3px var(--shadow);
-  text-shadow: none;
   pointer-events: none;
   animation: pop 0.25s steps(3);
 }
@@ -233,39 +380,70 @@
 
 .hint {
   position: absolute;
-  right: 16px;
-  bottom: 12px;
+  right: 24px;
+  bottom: 24px;
+  z-index: 2;
   margin: 0;
-  font: 13px var(--pixel);
-  opacity: 0.85;
+  font-size: 14px;
 }
 
-/* ── 下半部內容 ── */
+/* ── 下半部：像素視窗 ── */
 
 .content {
-  max-width: 640px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 48px 16px 120px;
+  padding: 72px 16px 40px;
   display: grid;
-  gap: 48px;
+  gap: 64px;
 }
 
-.content h2 {
-  margin: 0 0 16px;
-  font: 24px var(--pixel);
-  text-align: center;
+.window {
+  background: #fff;
+  box-shadow:
+    0 0 0 4px var(--shadow),
+    10px 10px 0 4px var(--shadow);
 }
-.content h2::before,
-.content h2::after {
-  content: ' ✦ ';
-  color: var(--peach);
+
+.window-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--deep);
+  color: #fff;
+  border-bottom: 4px solid var(--shadow);
+}
+.window-bar h2 {
+  margin: 0;
+  font: 22px var(--pixel);
+}
+.window-dots {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+.window-dots span {
+  width: 12px;
+  height: 12px;
+  background: #fff;
+}
+.window-dots span:first-child {
+  background: var(--peach);
+}
+.window-dots span:nth-child(2) {
+  background: var(--light);
+}
+
+.window-body {
+  padding: 28px;
+  display: grid;
+  gap: 20px;
 }
 
 .caption {
-  margin: -8px 0 16px;
-  font-size: 14px;
-  text-align: center;
-  opacity: 0.9;
+  margin: 0;
+  font-size: 15px;
+  color: var(--muted);
 }
 
 .tags {
@@ -274,101 +452,237 @@
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
+  gap: 16px;
 }
 .tags li {
-  padding: 6px 16px;
-  font-family: var(--pixel);
-  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  font: 18px var(--pixel);
   color: var(--deep);
-  box-shadow: 4px 4px 0 var(--shadow);
+  background: var(--pale);
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    4px 4px 0 3px var(--shadow);
+}
+
+.tv-screen {
+  fill: var(--peach);
 }
 
 .works {
   display: grid;
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
 }
 
 .work {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.92);
-  color: #123;
-  box-shadow: 6px 6px 0 var(--shadow);
+  flex-direction: column;
+  background: #fff;
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    6px 6px 0 3px var(--shadow);
 }
 .work-cover {
-  flex: 0 0 140px;
-  height: 100px;
+  position: relative;
+  height: 168px;
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--sky);
+  border-bottom: 3px solid var(--shadow);
+  background: linear-gradient(#1f75e0 0 33%, #4d9aee 33% 66%, var(--light) 66%);
 }
 .work-cover img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+.work-date {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 2px 8px;
+  font: 13px var(--pixel);
+  color: var(--deep);
+  background: #fff;
+}
 .work-text {
-  flex: 1 1 220px;
+  flex: 1;
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .work h3 {
-  margin: 0 0 6px;
-  font: 20px var(--pixel);
+  margin: 0;
+  font: 24px var(--pixel);
   color: var(--deep);
 }
 .work p {
-  margin: 0 0 12px;
+  margin: 0 0 10px;
 }
 
-.buttons,
-.links {
+.work-next {
+  min-height: 300px;
+  padding: 24px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  border: 3px dashed #8cb3e0;
+  background: #f4f9fe;
+  font: 16px var(--pixel);
+  color: var(--muted);
+  text-align: center;
+}
+.work-next svg {
+  opacity: 0.6;
+}
+
+.buttons {
+  margin-top: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
-.links {
-  justify-content: center;
-  gap: 16px;
-}
-.buttons a,
-.links a {
-  display: inline-block;
-  padding: 6px 14px;
-  font-family: var(--pixel);
+.buttons a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  font: 16px var(--pixel);
   text-decoration: none;
+}
+.button-solid {
+  color: #fff;
+  background: var(--deep);
   box-shadow: 3px 3px 0 var(--shadow);
 }
-.buttons a {
-  background: var(--deep);
-  color: #fff;
-}
-.links a {
-  background: #fff;
+.button-outline {
   color: var(--deep);
+  background: #fff;
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    3px 3px 0 3px var(--shadow);
 }
-.buttons a:hover,
-.links a:hover {
+.button-solid:hover {
   translate: 1px 1px;
   box-shadow: 2px 2px 0 var(--shadow);
 }
+.button-outline:hover {
+  translate: 1px 1px;
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    2px 2px 0 3px var(--shadow);
+}
 
+.links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+.links a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  font: 19px var(--pixel);
+  text-decoration: none;
+  color: var(--deep);
+  background: var(--pale);
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    5px 5px 0 3px var(--shadow);
+}
+.links a:hover {
+  translate: 1px 1px;
+  box-shadow:
+    0 0 0 3px var(--shadow),
+    4px 4px 0 3px var(--shadow);
+}
+.link-text {
+  display: flex;
+  flex-direction: column;
+}
+.link-handle {
+  font: 14px var(--body);
+  color: var(--muted);
+}
+.link-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--deep);
+}
+
+/* 頁尾：一排雲當作天空的盡頭 */
 .footer {
-  font: 14px var(--pixel);
-  text-align: center;
-  opacity: 0.8;
+  position: relative;
+  height: 240px;
+  display: flex;
+  justify-content: center;
+  padding-top: 32px;
+  overflow: hidden;
+  font: 16px var(--pixel);
+  color: var(--shadow);
+}
+.footer p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+.footer-cloud {
+  position: absolute;
+  line-height: 0;
+}
+.footer-cloud-1 {
+  left: -60px;
+  bottom: -70px;
+}
+.footer-cloud-2 {
+  left: 50%;
+  bottom: -110px;
+  translate: -50% 0;
+}
+.footer-cloud-3 {
+  right: -60px;
+  bottom: -60px;
 }
 
 /* ── 手機 ── */
 
 @media (max-width: 720px) {
   .sky h1 {
-    font-size: 48px;
+    font-size: 60px;
   }
-  /* 手機上提示會壓在大雲上，改成跟天氣標籤一樣的白底標籤才看得清楚 */
+  .intro {
+    font-size: 17px;
+  }
+  .sun {
+    top: 64px;
+    right: 6%;
+    width: 80px;
+    height: 80px;
+  }
+  .cloud-left {
+    top: 52%;
+  }
+  .cloud-right {
+    top: 14%;
+    right: -40px;
+  }
+  .cloud-right svg {
+    width: 144px;
+    height: auto;
+  }
+  /* 手機上提示會壓在雲上，改成置中 */
   .hint {
     right: auto;
     left: 50%;
@@ -376,14 +690,9 @@
     translate: -50% 0;
     width: max-content;
     max-width: calc(100% - 32px);
-    padding: 4px 10px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--deep);
-    box-shadow: 3px 3px 0 var(--shadow);
-    opacity: 1;
   }
-  .work-cover {
-    flex-basis: 100%;
+  .window-body {
+    padding: 20px;
   }
 }
