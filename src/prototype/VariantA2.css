@@ -1,0 +1,121 @@
+/* PROTOTYPE variant A2「積雨雲・俏皮版」: additions on top of VariantA.css */
+
+.va2-hero {
+  cursor: crosshair;
+}
+
+.va2-weather {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  margin: 0;
+  padding: 4px 10px;
+  font: 14px var(--pixel);
+  background: rgba(255, 255, 255, 0.9);
+  color: #0d5fd0;
+  box-shadow: 3px 3px 0 #0b3f8f;
+  z-index: 2;
+}
+
+/* clouds are buttons now; the va-cloud-* classes still place and animate them */
+.va2-cloud {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  line-height: 0;
+  cursor: pointer;
+}
+.va2-cloud:hover svg {
+  filter: brightness(1.05) drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+}
+.va2-cloud:active {
+  scale: 0.97;
+}
+
+.va2-bubble {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, calc(-100% - 12px));
+  padding: 6px 12px;
+  white-space: nowrap;
+  font: 15px var(--pixel);
+  color: #0d5fd0;
+  background: #fff;
+  box-shadow: 0 0 0 3px #0b3f8f, 4px 4px 0 3px #0b3f8f;
+  pointer-events: none;
+  text-shadow: none;
+  animation: va2-pop 0.25s steps(3);
+}
+.va2-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #0b3f8f;
+  transform: translateX(-50%);
+}
+@keyframes va2-pop {
+  from {
+    scale: 0.6;
+  }
+}
+
+.va2-wish-meteor {
+  position: absolute;
+  z-index: 4;
+  width: 160px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #fff 80%, #ffd9cf);
+  transform-origin: right center;
+  translate: -100% 0;
+  rotate: -25deg;
+  pointer-events: none;
+  animation: va2-shoot 0.9s ease-out forwards;
+}
+@keyframes va2-shoot {
+  from {
+    opacity: 1;
+    translate: calc(-100% - 160px) 75px;
+  }
+  to {
+    opacity: 0;
+    translate: -100% 0;
+  }
+}
+
+.va2-hint {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  margin: 0;
+  font: 13px var(--pixel);
+  opacity: 0.85;
+}
+
+.va2-caption {
+  margin: -8px 0 16px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.va2-footer {
+  margin: 0;
+  text-align: center;
+  font: 14px var(--pixel);
+  opacity: 0.8;
+}
+
+@media (max-width: 720px) {
+  .va2-hint {
+    left: 16px;
+    right: 16px;
+    bottom: 72px;
+    text-align: center;
+  }
+}

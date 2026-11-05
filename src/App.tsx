@@ -2,12 +2,14 @@
 import { useState } from 'react'
 import { PrototypeSwitcher } from './prototype/PrototypeSwitcher'
 import { VariantA } from './prototype/VariantA'
+import { VariantA2 } from './prototype/VariantA2'
 import { VariantB } from './prototype/VariantB'
 import { VariantC } from './prototype/VariantC'
 import { VariantD } from './prototype/VariantD'
 
 const variants = [
   { key: 'A', name: '積雨雲' },
+  { key: 'A2', name: '積雨雲・俏皮版' },
   { key: 'B', name: '夜泳池' },
   { key: 'C', name: '白磁磚泳池' },
   { key: 'D', name: '天空 RPG（A＋C）' },
@@ -29,6 +31,7 @@ function App() {
   return (
     <>
       {variant === 'A' && <VariantA />}
+      {variant === 'A2' && <VariantA2 />}
       {variant === 'B' && <VariantB />}
       {variant === 'C' && <VariantC />}
       {variant === 'D' && <VariantD />}
