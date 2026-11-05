@@ -7,4 +7,6 @@
   "assets": {
     "directory": "./dist",
   },
+  // PR 分支的預覽部署（npx wrangler preview）需要這個區塊，空的就好
+  "previews": {},
 }

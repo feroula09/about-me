@@ -6,6 +6,9 @@ import avatar from './橘髮花飾蝴蝶結萌系特寫.png'
 export const profile: Profile = {
   name: 'Camila',
   intro: '嗨，我是 Camila，喜歡寫程式和看動漫。',
-  hobbies: ['Vibe coding', '看動漫'],
+  hobbies: [
+    { label: 'Vibe coding', icon: 'code' },
+    { label: '看動漫', icon: 'tv' },
+  ],
   avatar: avatar,
 }

@@ -47,6 +47,12 @@ npm run dev
 
 編輯 `src/content/profile.ts`：名字、自我介紹、興趣和大頭貼。
 
+每個興趣是一個標籤，`icon` 選填，決定標籤前面的像素小圖示（`code` 程式碼符號、`tv` 小電視，沒填就是十字星）：
+
+```ts
+{ label: '看動漫', icon: 'tv' },
+```
+
 換大頭貼：把圖片放進 `src/content/`，在 `profile.ts` 裡 import 後填到 `avatar`。沒填 `avatar` 的話，會顯示名字第一個字的圓形色塊。
 
 ### 社群連結
@@ -54,7 +60,7 @@ npm run dev
 在 `src/content/links.ts` 加一行：
 
 ```ts
-{ label: '平台名稱', url: '網址' },
+{ label: '平台名稱', url: '網址', handle: '@帳號' }, // handle 選填，顯示在平台名稱下面
 ```
 
 ### 新增作品
@@ -89,6 +95,8 @@ src/
 ├── App.tsx             # 頁面主體：興趣、作品、社群連結
 ├── Sky.tsx             # 第一屏的天空與彩蛋
 ├── PixelCloud.tsx      # 原創像素雲（SVG）
+├── PixelSparkle.tsx    # 像素十字星裝飾（SVG）
+├── HobbyIcon.tsx       # 興趣標籤的像素小圖示
 ├── content/            # 所有頁面內容
 │   ├── types.ts
 │   ├── profile.ts

@@ -7,11 +7,11 @@ import type { Link, Profile, Work } from './content/types'
 const profile: Profile = {
   name: 'Camila',
   intro: '嗨，我是測試用的自我介紹。',
-  hobbies: ['Vibe coding', '看動漫'],
+  hobbies: [{ label: 'Vibe coding', icon: 'code' }, { label: '看動漫', icon: 'tv' }],
 }
 
 const links: Link[] = [
-  { label: 'Threads', url: 'https://www.threads.com/@someone' },
+  { label: 'Threads', url: 'https://www.threads.com/@someone', handle: '@someone' },
   { label: 'GitHub', url: 'https://github.com/someone' },
 ]
 
@@ -58,6 +58,13 @@ describe('App', () => {
     const github = screen.getByRole('link', { name: /GitHub/ })
     expect(github).toHaveAttribute('href', 'https://github.com/someone')
     expect(github).toHaveAttribute('target', '_blank')
+  })
+
+  it('社群連結有填帳號時顯示帳號，沒填就只顯示平台名稱', () => {
+    renderApp()
+
+    expect(screen.getByRole('link', { name: /Threads/ })).toHaveTextContent('@someone')
+    expect(screen.getByRole('link', { name: /GitHub/ })).toHaveTextContent(/^GitHub$/)
   })
 
   it('作品依日期由新到舊排列，每張卡片都有名稱和介紹', () => {
