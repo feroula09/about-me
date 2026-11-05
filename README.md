@@ -10,7 +10,7 @@ Camila 的像素風自我介紹網頁，給朋友看、好玩性質。
   - 點雲：雲會隨機說一句話（雲是按鈕，用鍵盤按 Enter 也可以）
   - 點天空空白處：劃過一顆流星並許願，會累計許願次數
 - **最近沉迷**：興趣標籤
-- **雲上的作品**：從 GitHub 挑出來展示的作品，依日期由新到舊排列
+- **雲上的作品**：手動挑選的作品（寫在 `src/content/works/`），依日期由新到舊排列
 - **丟紙飛機給我**：社群連結
 
 ## 技術
@@ -97,13 +97,18 @@ src/
 ├── PixelCloud.tsx      # 原創像素雲（SVG）
 ├── PixelSparkle.tsx    # 像素十字星裝飾（SVG）
 ├── HobbyIcon.tsx       # 興趣標籤的像素小圖示
+├── index.css           # 全域樣式
+├── App.css             # 頁面樣式
 ├── content/            # 所有頁面內容
 │   ├── types.ts
 │   ├── profile.ts
 │   ├── links.ts
+│   ├── *.png           # 大頭貼圖片
 │   ├── works.ts        # 自動收集 works/*/index.ts
 │   └── works/
 │       └── about-me/
+├── test/
+│   └── setup.ts        # 測試初始化
 ├── App.test.tsx        # 元件行為測試
 └── content.smoke.test.tsx  # 用真正的內容渲染一次
 ```
