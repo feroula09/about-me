@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
@@ -128,6 +128,17 @@ describe('App', () => {
 
     expect(screen.getByRole('img', { name: 'Camila 的大頭貼' })).toHaveAttribute('src', '/me.png')
     expect(screen.queryByText('C')).not.toBeInTheDocument()
+  })
+
+  it('三個視窗旁各有一張小雲插畫，而且螢幕閱讀器讀不到', () => {
+    const { container } = renderApp({ profile: { ...profile, avatar: '/me.png' }, works: [work({ cover: '/a.png' })] })
+
+    // 純裝飾的圖片用 alt=""，角色是 presentation，螢幕閱讀器不會念出來
+    const windows = container.querySelectorAll('.window')
+    expect(windows).toHaveLength(3)
+    for (const win of windows) {
+      expect(within(win as HTMLElement).getAllByRole('presentation')).toHaveLength(1)
+    }
   })
 
   it('點雲之後，冒出一句雲的台詞，而且不算許願', async () => {

@@ -13,6 +13,8 @@ Camila 的像素風自我介紹網頁，給朋友看、好玩性質。
 - **雲上的作品**：手動挑選的作品（寫在 `src/content/works/`），依日期由新到舊排列
 - **丟紙飛機給我**：社群連結
 
+整頁背景是一張固定不動的像素天空插畫（直向螢幕換成直式那張），每個視窗旁邊還有一張原創角色「小雲」的插畫。這些圖是用 ChatGPT 生成的，畫小雲的新插畫時，可以拿 `docs/art/kumo-sheet.png` 當角色參考。
+
 ## 技術
 
 - [React](https://react.dev/) 19 + TypeScript
@@ -99,6 +101,8 @@ src/
 ├── HobbyIcon.tsx       # 興趣標籤的像素小圖示
 ├── index.css           # 全域樣式
 ├── App.css             # 頁面樣式
+├── assets/
+│   └── illustrations/  # 背景和小雲插畫（webp）
 ├── content/            # 所有頁面內容
 │   ├── types.ts
 │   ├── profile.ts
