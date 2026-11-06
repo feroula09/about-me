@@ -1,4 +1,4 @@
-/* D「積雨雲 2.0」：沿用藍天像素風，天空改成階梯色帶，內容放進像素視窗 */
+/* D「積雨雲 2.0」：沿用藍天像素風，整頁背景是一張天空插畫，內容放進像素視窗 */
 .page {
   --deep: #0d5fd0;
   --sky: #2f86e8;
@@ -10,9 +10,25 @@
   --pale: #eaf4fd;
 
   min-height: 100vh;
-  background: var(--light);
   color: var(--ink);
   overflow-x: hidden;
+  isolation: isolate;
+}
+
+/* 整頁的天空背景圖：固定在畫面上不跟著捲動，直向螢幕換直式那張。
+   用 position: fixed 而不是 background-attachment: fixed，因為 iOS Safari 不支援後者 */
+.page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--light) url('./assets/illustrations/sky-landscape.webp') center / cover no-repeat;
+  image-rendering: pixelated;
+}
+@media (orientation: portrait) {
+  .page::before {
+    background-image: url('./assets/illustrations/sky-portrait.webp');
+  }
 }
 
 /* 白底深藍字的小標籤：天氣、往下飄、提示 */
@@ -38,63 +54,6 @@
   cursor: crosshair;
 }
 
-.sky-bands {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  pointer-events: none;
-}
-.band {
-  flex: 1 1 0;
-}
-.band:last-child {
-  flex-grow: 1.6;
-}
-.dither {
-  flex: 0 0 8px;
-}
-
-.sun {
-  position: absolute;
-  top: 56px;
-  right: 16%;
-  pointer-events: none;
-}
-
-.twinkle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: #fff;
-  pointer-events: none;
-  animation: twinkle 2.4s steps(2) infinite;
-}
-.twinkle-1 {
-  top: 7%;
-  left: 24%;
-}
-.twinkle-2 {
-  top: 15%;
-  left: 38%;
-  animation-delay: 0.6s;
-}
-.twinkle-3 {
-  top: 21%;
-  left: 64%;
-  animation-delay: 1.2s;
-}
-.twinkle-4 {
-  top: 28%;
-  left: 90%;
-  animation-delay: 1.8s;
-}
-@keyframes twinkle {
-  50% {
-    opacity: 0.3;
-  }
-}
-
 .weather {
   position: absolute;
   top: 24px;
@@ -105,40 +64,6 @@
   align-items: center;
   gap: 8px;
   box-shadow: 4px 4px 0 var(--shadow);
-}
-
-/* 遠處的雲：比較淡、比較小，只是背景 */
-.cloud-far {
-  position: absolute;
-  line-height: 0;
-  opacity: 0.55;
-  pointer-events: none;
-  animation: drift 60s linear infinite alternate;
-}
-.cloud-far-1 {
-  top: 24%;
-  left: 6%;
-}
-.cloud-far-2 {
-  top: 19%;
-  right: 11%;
-  animation-duration: 75s;
-  animation-direction: alternate-reverse;
-}
-
-/* 底部連成地平線的雲 */
-.cloud-floor {
-  position: absolute;
-  line-height: 0;
-  pointer-events: none;
-}
-.cloud-floor-left {
-  left: -90px;
-  bottom: -36px;
-}
-.cloud-floor-right {
-  right: -110px;
-  bottom: -44px;
 }
 
 .cloud {
@@ -188,49 +113,6 @@
   }
 }
 
-/* 自動劃過的流星 */
-.meteor {
-  position: absolute;
-  width: 140px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #fff);
-  rotate: -25deg;
-  opacity: 0;
-  pointer-events: none;
-  animation: meteor 7s linear infinite;
-}
-.meteor-1 {
-  top: 12%;
-  left: 10%;
-}
-.meteor-2 {
-  top: 6%;
-  left: 52%;
-  animation-delay: 2.5s;
-}
-.meteor-3 {
-  top: 30%;
-  left: 30%;
-  animation-delay: 5s;
-}
-
-@keyframes meteor {
-  0% {
-    opacity: 0;
-    translate: 0 0;
-  }
-  4% {
-    opacity: 1;
-  }
-  12% {
-    opacity: 0;
-    translate: 220px -100px;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
 .sky-text {
   position: relative;
   z-index: 1;
@@ -262,6 +144,11 @@
 .sparkle {
   position: absolute;
   animation: twinkle 1.8s steps(2) infinite;
+}
+@keyframes twinkle {
+  50% {
+    opacity: 0.3;
+  }
 }
 .sparkle-1 {
   top: -14px;
@@ -398,10 +285,45 @@
 }
 
 .window {
+  position: relative;
   background: #fff;
   box-shadow:
     0 0 0 4px var(--shadow),
     10px 10px 0 4px var(--shadow);
+}
+
+/* 小雲插畫：寬螢幕時靠在視窗外側，壓住一點視窗的角 */
+.window-art {
+  position: absolute;
+  z-index: 1;
+  top: -24px;
+  width: 220px;
+  height: auto;
+  pointer-events: none;
+}
+.window-art-left {
+  right: calc(100% - 20px);
+}
+.window-art-right {
+  left: calc(100% - 20px);
+}
+
+/* 兩側放不下時，縮小坐在視窗右上角 */
+@media (max-width: 1360px) {
+  .content {
+    gap: 96px;
+  }
+  .window-art {
+    top: auto;
+    bottom: calc(100% - 8px);
+    width: auto;
+    height: 88px;
+  }
+  .window-art-left,
+  .window-art-right {
+    left: auto;
+    right: 12px;
+  }
 }
 
 .window-bar {
@@ -622,38 +544,16 @@
   background: var(--deep);
 }
 
-/* 頁尾：一排雲當作天空的盡頭 */
+/* 頁尾：天空的盡頭 */
 .footer {
-  position: relative;
-  height: 240px;
   display: flex;
   justify-content: center;
-  padding-top: 32px;
-  overflow: hidden;
+  padding: 32px 16px 64px;
   font: 16px var(--pixel);
   color: var(--shadow);
 }
 .footer p {
-  position: relative;
-  z-index: 1;
   margin: 0;
-}
-.footer-cloud {
-  position: absolute;
-  line-height: 0;
-}
-.footer-cloud-1 {
-  left: -60px;
-  bottom: -70px;
-}
-.footer-cloud-2 {
-  left: 50%;
-  bottom: -110px;
-  translate: -50% 0;
-}
-.footer-cloud-3 {
-  right: -60px;
-  bottom: -60px;
 }
 
 /* ── 手機 ── */
@@ -664,12 +564,6 @@
   }
   .intro {
     font-size: 17px;
-  }
-  .sun {
-    top: 64px;
-    right: 6%;
-    width: 80px;
-    height: 80px;
   }
   .cloud-left {
     top: 52%;

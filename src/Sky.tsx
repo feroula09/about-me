@@ -1,21 +1,7 @@
-import { Fragment, useRef, useState, type MouseEvent } from 'react'
+import { useRef, useState, type MouseEvent } from 'react'
 import type { Profile } from './content/types'
 import { PixelCloud } from './PixelCloud'
 import { PixelSparkle } from './PixelSparkle'
-
-// 天空由上到下的色帶，交界處用像素格子過渡
-const skyBands = ['#0d5fd0', '#1f75e0', '#2f86e8', '#4d9aee', '#6aaef2', '#8cc3f5']
-
-function PixelSun() {
-  return (
-    <svg className="sun" viewBox="0 0 16 16" width="128" height="128" shapeRendering="crispEdges" aria-hidden="true">
-      <path fill="#fff1b8" d="M5 0h6v1h2v1h1v1h1v2H0V3h1V2h1V1h3z" />
-      <path fill="#ffe08a" d="M0 5h16v6h-1v2H1v-2H0z" />
-      <path fill="#ffd36b" d="M2 13h12v1h-1v1h-2v1H5v-1H3v-1H2z" />
-      <path fill="#fff" d="M4 3h2v2H4z" />
-    </svg>
-  )
-}
 
 const cloudLines = [
   '我只是一朵雲，請不要戳我',
@@ -79,43 +65,6 @@ export function Sky({ profile }: { profile: Profile }) {
   return (
     // 點天空是滑鼠彩蛋；鍵盤使用者可以改按雲（雲是按鈕）
     <header className="sky" ref={skyRef} onClick={onSky}>
-      <div className="sky-bands" aria-hidden="true">
-        {skyBands.map((color, i) => (
-          <Fragment key={color}>
-            {i > 0 && (
-              <div
-                className="dither"
-                style={{ background: `repeating-conic-gradient(${skyBands[i - 1]} 0 25%, ${color} 0 50%) 0 0 / 8px 8px` }}
-              />
-            )}
-            <div className="band" style={{ background: color }} />
-          </Fragment>
-        ))}
-      </div>
-
-      <PixelSun />
-      <div className="twinkle twinkle-1" />
-      <div className="twinkle twinkle-2" />
-      <div className="twinkle twinkle-3" />
-      <div className="twinkle twinkle-4" />
-
-      <div className="meteor meteor-1" />
-      <div className="meteor meteor-2" />
-      <div className="meteor meteor-3" />
-
-      <div className="cloud-far cloud-far-1">
-        <PixelCloud scale={5} />
-      </div>
-      <div className="cloud-far cloud-far-2">
-        <PixelCloud scale={4} />
-      </div>
-      <div className="cloud-floor cloud-floor-left">
-        <PixelCloud scale={20} />
-      </div>
-      <div className="cloud-floor cloud-floor-right">
-        <PixelCloud scale={22} />
-      </div>
-
       <button type="button" className="cloud cloud-big" onClick={onCloud} aria-label="戳一下雲">
         <PixelCloud scale={32} />
       </button>

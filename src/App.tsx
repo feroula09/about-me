@@ -1,5 +1,8 @@
 import type { ReactNode } from 'react'
 import './App.css'
+import kumoHobbies from './assets/illustrations/kumo-hobbies.webp'
+import kumoLinks from './assets/illustrations/kumo-links.webp'
+import kumoWorks from './assets/illustrations/kumo-works.webp'
 import type { Link, Profile, Work } from './content/types'
 import { HobbyIcon } from './HobbyIcon'
 import { PixelCloud } from './PixelCloud'
@@ -11,10 +14,20 @@ type Props = {
   works: Work[]
 }
 
-/** 像素風小視窗：深藍標題列＋白色內容。 */
-function Window({ title, caption, children }: { title: string; caption: string; children: ReactNode }) {
+type WindowProps = {
+  title: string
+  caption: string
+  /** 靠在視窗旁邊的小雲插畫，純裝飾。 */
+  art: string
+  artSide: 'left' | 'right'
+  children: ReactNode
+}
+
+/** 像素風小視窗：深藍標題列＋白色內容，旁邊靠著一張小雲插畫。 */
+function Window({ title, caption, art, artSide, children }: WindowProps) {
   return (
     <section className="window">
+      <img className={`window-art window-art-${artSide}`} src={art} alt="" />
       <div className="window-bar">
         <PixelCloud scale={1.5} />
         <h2>{title}</h2>
@@ -40,7 +53,7 @@ function App({ profile, links, works }: Props) {
       <Sky profile={profile} />
 
       <main className="content">
-        <Window title="最近沉迷" caption="沉迷程度：99%，剩下 1% 用來睡覺">
+        <Window title="最近沉迷" caption="沉迷程度：99%，剩下 1% 用來睡覺" art={kumoHobbies} artSide="left">
           <ul className="tags">
             {profile.hobbies.map((hobby) => (
               <li key={hobby.label}>
@@ -51,7 +64,7 @@ function App({ profile, links, works }: Props) {
           </ul>
         </Window>
 
-        <Window title="雲上的作品" caption="目前只有一朵，之後會越飄越多">
+        <Window title="雲上的作品" caption="目前只有一朵，之後會越飄越多" art={kumoWorks} artSide="right">
           <div className="works">
             {newestFirst.map((work) => (
               <article key={work.name} className="work">
@@ -88,7 +101,7 @@ function App({ profile, links, works }: Props) {
           </div>
         </Window>
 
-        <Window title="丟紙飛機給我" caption="保證會飛到我手上">
+        <Window title="丟紙飛機給我" caption="保證會飛到我手上" art={kumoLinks} artSide="left">
           <div className="links">
             {links.map((link) => (
               <a key={link.url} href={link.url} target="_blank" rel="noreferrer">
@@ -110,15 +123,6 @@ function App({ profile, links, works }: Props) {
 
       <footer className="footer">
         <p>— 你已經飄到天空的盡頭了 —</p>
-        <div className="footer-cloud footer-cloud-1">
-          <PixelCloud scale={20} />
-        </div>
-        <div className="footer-cloud footer-cloud-2">
-          <PixelCloud scale={24} />
-        </div>
-        <div className="footer-cloud footer-cloud-3">
-          <PixelCloud scale={20} />
-        </div>
       </footer>
     </div>
   )
