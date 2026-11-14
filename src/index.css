@@ -1,17 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
-
-/* Cubic 11（俐方體 11 號）：開源像素字體，支援繁體中文 */
-@font-face {
-  font-family: 'Cubic 11';
-  src: url('https://cdn.jsdelivr.net/gh/ACh-K/Cubic-11@v1.500/fonts/web/Cubic_11.woff2') format('woff2');
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;500;700;900&display=swap');
 
 :root {
-  --pixel: 'Cubic 11', 'Noto Sans TC', monospace;
-  --body: 'Noto Sans TC', system-ui, sans-serif;
-  font-family: var(--body);
-  line-height: 1.6;
+  /* 取色自大頭貼：頭髮橘、緞帶黑、臉頰粉、白襯衫，首屏是淡天空 */
+  --orange: #f07a3c;
+  --orange-deep: #b6461c;
+  --orange-soft: #fde4d6;
+  --ink: #2a1d18;
+  --ink-soft: #5c4a42;
+  --pink: #f7b2aa;
+  --paper: #ffffff;
+  --sky: #d5ebf7;
+  --sky-deep: #a9d0ea;
+
+  --round: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif;
+  --shadow: 0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12);
+  --settle: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  font-family: var(--round);
+  line-height: 1.7;
+  color: var(--ink);
+  font-weight: 500;
+  scrollbar-color: var(--orange) var(--orange-soft);
 }
 
 *,
@@ -20,16 +29,35 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background: #8cc3f5;
+  background: var(--paper);
+}
+
+::selection {
+  background: var(--pink);
+  color: var(--ink);
 }
 
 a {
   color: inherit;
+  text-underline-offset: 0.25em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--orange-deep);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {

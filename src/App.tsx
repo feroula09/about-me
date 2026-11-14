@@ -1,11 +1,8 @@
 import type { ReactNode } from 'react'
 import './App.css'
-import kumoHobbies from './assets/illustrations/kumo-hobbies.webp'
-import kumoLinks from './assets/illustrations/kumo-links.webp'
-import kumoWorks from './assets/illustrations/kumo-works.webp'
 import type { Link, Profile, Work } from './content/types'
 import { HobbyIcon } from './HobbyIcon'
-import { PixelCloud } from './PixelCloud'
+import { Cloud, Daisy, PaperPlane, Ribbon } from './Ornaments'
 import { Sky } from './Sky'
 
 type Props = {
@@ -14,33 +11,28 @@ type Props = {
   works: Work[]
 }
 
-type WindowProps = {
+type SectionProps = {
+  id: string
   title: string
   caption: string
-  /** 靠在視窗旁邊的小雲插畫，純裝飾。 */
-  art: string
-  artSide: 'left' | 'right'
+  className: string
+  /** 標題前面的小插畫，純裝飾。 */
+  icon: ReactNode
   children: ReactNode
 }
 
-/** 像素風小視窗：深藍標題列＋白色內容，旁邊靠著一張小雲插畫。 */
-function Window({ title, caption, art, artSide, children }: WindowProps) {
+/** 一個段落：圓體大標、一句俏皮的說明，再接內容。 */
+function Section({ id, title, caption, className, icon, children }: SectionProps) {
   return (
-    <section className="window">
-      <img className={`window-art window-art-${artSide}`} src={art} alt="" />
-      <div className="window-bar">
-        <PixelCloud scale={1.5} />
-        <h2>{title}</h2>
-        <span className="window-dots" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
-      </div>
-      <div className="window-body">
+    <section id={id} className={`section ${className}`} aria-labelledby={`${id}-title`}>
+      <div className="section-head">
+        <h2 id={`${id}-title`}>
+          {icon}
+          {title}
+        </h2>
         <p className="caption">{caption}</p>
-        {children}
       </div>
+      {children}
     </section>
   )
 }
@@ -52,19 +44,21 @@ function App({ profile, links, works }: Props) {
     <div className="page">
       <Sky profile={profile} />
 
-      <main className="content">
-        <Window title="最近沉迷" caption="沉迷程度：99%，剩下 1% 用來睡覺" art={kumoHobbies} artSide="left">
+      <main>
+        <Section id="hobbies" className="section-hobbies" icon={<Daisy className="section-icon" size={34} />} title="最近沉迷" caption="沉迷程度：99%，剩下 1% 用來睡覺">
           <ul className="tags">
             {profile.hobbies.map((hobby) => (
               <li key={hobby.label}>
-                <HobbyIcon icon={hobby.icon} />
+                <span className="tag-icon">
+                  <HobbyIcon icon={hobby.icon} />
+                </span>
                 {hobby.label}
               </li>
             ))}
           </ul>
-        </Window>
+        </Section>
 
-        <Window title="雲上的作品" caption="目前只有一朵，之後會越飄越多" art={kumoWorks} artSide="right">
+        <Section id="works" className="section-works" icon={<Cloud width={58} />} title="雲上的作品" caption="目前只有一朵，之後會越飄越多">
           <div className="works">
             {newestFirst.map((work) => (
               <article key={work.name} className="work">
@@ -72,13 +66,22 @@ function App({ profile, links, works }: Props) {
                   {work.cover ? (
                     <img src={work.cover} alt={`${work.name} 的封面`} />
                   ) : (
-                    <PixelCloud scale={7} label={`${work.name} 的預設封面`} />
+                    <div className="work-cover-default" role="img" aria-label={`${work.name} 的預設封面`}>
+                      <span className="cover-title" aria-hidden="true">
+                        {work.name}
+                      </span>
+                      <Cloud width={120} />
+                      <Daisy className="cover-daisy" size={56} />
+                    </div>
                   )}
-                  <span className="work-date">{work.date}</span>
+                  <span className="tape tape-left" aria-hidden="true" />
                 </div>
                 <div className="work-text">
                   <h3>{work.name}</h3>
                   <p>{work.description}</p>
+                  <time className="work-date" dateTime={work.date}>
+                    {work.date.replaceAll('-', '.')}
+                  </time>
                   <div className="buttons">
                     {work.github && (
                       <a className="button-solid" href={work.github} target="_blank" rel="noreferrer">
@@ -94,22 +97,19 @@ function App({ profile, links, works }: Props) {
                 </div>
               </article>
             ))}
-            <div className="work-next">
-              <PixelCloud scale={5} />
+            <p className="work-next">
+              <Cloud width={56} />
               下一朵雲正在路上…
-            </div>
+            </p>
           </div>
-        </Window>
+        </Section>
 
-        <Window title="丟紙飛機給我" caption="保證會飛到我手上" art={kumoLinks} artSide="left">
+        <Section id="links" className="section-links" icon={<span className="section-icon plane-icon"><PaperPlane size={26} /></span>} title="丟紙飛機給我" caption="保證會飛到我手上">
           <div className="links">
             {links.map((link) => (
               <a key={link.url} href={link.url} target="_blank" rel="noreferrer">
-                <span className="link-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round">
-                    <path d="M22 2 11 13" />
-                    <path d="M22 2 15 22l-4-9-9-4 20-7z" />
-                  </svg>
+                <span className="link-icon">
+                  <PaperPlane />
                 </span>
                 <span className="link-text">
                   {link.label}
@@ -118,10 +118,14 @@ function App({ profile, links, works }: Props) {
               </a>
             ))}
           </div>
-        </Window>
+        </Section>
       </main>
 
       <footer className="footer">
+        <span className="footer-mark" aria-hidden="true">
+          <Daisy className="footer-daisy" size={48} />
+          <Ribbon className="footer-ribbon" size={44} />
+        </span>
         <p>— 你已經飄到天空的盡頭了 —</p>
       </footer>
     </div>

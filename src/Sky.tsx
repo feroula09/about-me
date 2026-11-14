@@ -1,7 +1,6 @@
 import { useRef, useState, type MouseEvent } from 'react'
 import type { Profile } from './content/types'
-import { PixelCloud } from './PixelCloud'
-import { PixelSparkle } from './PixelSparkle'
+import { Cloud, Daisy, Ribbon, Star } from './Ornaments'
 
 const cloudLines = [
   '我只是一朵雲，請不要戳我',
@@ -22,6 +21,22 @@ type Bubble = { id: number; x: number; y: number; text: string }
 type Meteor = { id: number; x: number; y: number }
 
 const pick = (list: string[]) => list[Math.floor(Math.random() * list.length)]
+
+/** 名字字標：第一個小寫 i 的點換成一朵雛菊（雛菊蓋在點上，文字本身不變）。 */
+function Wordmark({ name }: { name: string }) {
+  const at = name.indexOf('i')
+  if (at === -1) return name
+  return (
+    <>
+      {name.slice(0, at)}
+      <span className="wordmark-i">
+        i
+        <Daisy className="wordmark-daisy" size={64} />
+      </span>
+      {name.slice(at + 1)}
+    </>
+  )
+}
 
 /** 第一個畫面：整片藍天、頭像和名字，還有兩個彩蛋：點雲會說話、點天空會劃過流星並許願。 */
 export function Sky({ profile }: { profile: Profile }) {
@@ -65,53 +80,91 @@ export function Sky({ profile }: { profile: Profile }) {
   return (
     // 點天空是滑鼠彩蛋；鍵盤使用者可以改按雲（雲是按鈕）
     <header className="sky" ref={skyRef} onClick={onSky}>
-      <button type="button" className="cloud cloud-big" onClick={onCloud} aria-label="戳一下雲">
-        <PixelCloud scale={32} />
+      <nav className="topbar" aria-label="頁面導覽">
+        <a className="topbar-mark" href="#top">
+          {profile.name}
+        </a>
+        <ul>
+          <li>
+            <a href="#hobbies">最近沉迷</a>
+          </li>
+          <li>
+            <a href="#works">雲上的作品</a>
+          </li>
+          <li>
+            <a href="#links">丟紙飛機給我</a>
+          </li>
+        </ul>
+      </nav>
+
+      <button type="button" className="cloud cloud-a" onClick={onCloud} aria-label="戳一下雲">
+        <Cloud width={220} />
       </button>
-      <button type="button" className="cloud cloud-left" onClick={onCloud} aria-label="戳一下雲">
-        <PixelCloud scale={9} />
+      <button type="button" className="cloud cloud-b" onClick={onCloud} aria-label="戳一下雲">
+        <Cloud width={150} />
       </button>
-      <button type="button" className="cloud cloud-right" onClick={onCloud} aria-label="戳一下雲">
-        <PixelCloud scale={8} />
+      <button type="button" className="cloud cloud-c" onClick={onCloud} aria-label="戳一下雲">
+        <Cloud width={120} />
       </button>
 
+      <div className="kv" id="top">
+        <figure className="kv-card">
+          {profile.avatar ? (
+            <img className="avatar" src={profile.avatar} alt={`${profile.name} 的大頭貼`} />
+          ) : (
+            <div className="avatar avatar-empty" aria-hidden="true">
+              {profile.name.slice(0, 1)}
+            </div>
+          )}
+          <span className="tape tape-left" aria-hidden="true" />
+          <span className="tape tape-right" aria-hidden="true" />
+        </figure>
+        <Daisy className="kv-daisy kv-daisy-1" size={64} />
+        <Daisy className="kv-daisy kv-daisy-2" size={36} />
+        <Star className="kv-star kv-star-1" size={22} />
+        <Star className="kv-star kv-star-2" size={14} />
+
+        <h1 className="wordmark" data-text={profile.name}>
+          <Wordmark name={profile.name} />
+        </h1>
+        <p className="intro">
+          <Ribbon className="intro-ribbon" size={52} />
+          {profile.intro}
+        </p>
+      </div>
+
       <p className="weather">
-        <svg viewBox="0 0 7 7" width="14" height="14" shapeRendering="crispEdges" aria-hidden="true">
-          <path fill="#ffc94d" d="M2 0h3v1h1v1h1v3H6v1H5v1H2V6H1V5H0V2h1V1h1z" />
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <circle cx="12" cy="12" r="5" fill="#f7b23b" />
+          <g stroke="#f7b23b" strokeWidth="2" strokeLinecap="round">
+            <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
+          </g>
         </svg>
         今日天氣：晴時多雲，適合寫程式
       </p>
 
-      <div className="sky-text">
-        <div className="avatar-frame">
-          {profile.avatar ? (
-            <img className="avatar" src={profile.avatar} alt={`${profile.name} 的大頭貼`} />
-          ) : (
-            <div className="avatar" aria-hidden="true">
-              {profile.name.slice(0, 1)}
-            </div>
-          )}
-          <PixelSparkle className="sparkle sparkle-1" />
-          <PixelSparkle className="sparkle sparkle-2" />
-        </div>
-        <h1>{profile.name}</h1>
-        <p className="intro">{profile.intro}</p>
-        <span className="scroll-hint">往下飄 ▼</span>
-      </div>
+      <p className="hint">
+        （偷偷說：天空和雲都可以點）
+        {wishes > 0 && <span className="wish-count"> · 已許願 {wishes} 次</span>}
+      </p>
+
+      <a className="scroll-hint" href="#hobbies">
+        往下飄
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </a>
 
       {meteors.map((m) => (
-        <div key={m.id} className="wish-meteor" style={{ left: m.x, top: m.y }} />
+        <div key={m.id} className="wish-meteor" style={{ left: m.x, top: m.y }} aria-hidden="true">
+          <Star size={18} />
+        </div>
       ))}
       {bubbles.map((b) => (
         <div key={b.id} role="status" className="bubble" style={{ left: b.x, top: b.y }}>
           {b.text}
         </div>
       ))}
-
-      <p className="hint">
-        （偷偷說：天空和雲都可以點）
-        {wishes > 0 && ` · 已許願 ${wishes} 次`}
-      </p>
     </header>
   )
 }

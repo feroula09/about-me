@@ -8,7 +8,7 @@ export type Profile = {
 
 export type Hobby = {
   label: string
-  /** 標籤前面的像素小圖示：code 是程式碼符號、tv 是小電視。沒填就用十字星。 */
+  /** 標籤前面的小圖示：code 是程式碼符號、tv 是小電視。沒填就用小星星。 */
   icon?: 'code' | 'tv'
 }
 

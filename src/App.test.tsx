@@ -130,15 +130,16 @@ describe('App', () => {
     expect(screen.queryByText('C')).not.toBeInTheDocument()
   })
 
-  it('三個視窗旁各有一張小雲插畫，而且螢幕閱讀器讀不到', () => {
-    const { container } = renderApp({ profile: { ...profile, avatar: '/me.png' }, works: [work({ cover: '/a.png' })] })
+  it('導覽列連到三個段落', () => {
+    renderApp()
 
-    // 純裝飾的圖片用 alt=""，角色是 presentation，螢幕閱讀器不會念出來
-    const windows = container.querySelectorAll('.window')
-    expect(windows).toHaveLength(3)
-    for (const win of windows) {
-      expect(within(win as HTMLElement).getAllByRole('presentation')).toHaveLength(1)
-    }
+    const nav = screen.getByRole('navigation', { name: '頁面導覽' })
+    expect(within(nav).getByRole('link', { name: '最近沉迷' })).toHaveAttribute('href', '#hobbies')
+    expect(within(nav).getByRole('link', { name: '雲上的作品' })).toHaveAttribute('href', '#works')
+    expect(within(nav).getByRole('link', { name: '丟紙飛機給我' })).toHaveAttribute('href', '#links')
+    expect(screen.getByRole('region', { name: /最近沉迷/ })).toHaveAttribute('id', 'hobbies')
+    expect(screen.getByRole('region', { name: /雲上的作品/ })).toHaveAttribute('id', 'works')
+    expect(screen.getByRole('region', { name: /丟紙飛機給我/ })).toHaveAttribute('id', 'links')
   })
 
   it('點雲之後，冒出一句雲的台詞，而且不算許願', async () => {

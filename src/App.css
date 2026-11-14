@@ -1,592 +1,975 @@
-/* D「積雨雲 2.0」：沿用藍天像素風，整頁背景是一張天空插畫，內容放進像素視窗 */
 .page {
-  --deep: #0d5fd0;
-  --sky: #2f86e8;
-  --light: #8cc3f5;
-  --shadow: #0b3f8f;
-  --peach: #ffd9cf;
-  --ink: #12305c;
-  --muted: #3f5f8f;
-  --pale: #eaf4fd;
-
-  min-height: 100vh;
-  color: var(--ink);
-  overflow-x: hidden;
-  isolation: isolate;
+  overflow-x: clip;
 }
 
-/* 整頁的天空背景圖：固定在畫面上不跟著捲動，直向螢幕換直式那張。
-   用 position: fixed 而不是 background-attachment: fixed，因為 iOS Safari 不支援後者 */
-.page::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: var(--light) url('./assets/illustrations/sky-landscape.webp') center / cover no-repeat;
-  image-rendering: pixelated;
-}
-@media (orientation: portrait) {
-  .page::before {
-    background-image: url('./assets/illustrations/sky-portrait.webp');
-  }
-}
-
-/* 白底深藍字的小標籤：天氣、往下飄、提示 */
-.weather,
-.scroll-hint,
-.hint {
-  padding: 4px 12px;
-  font: 15px var(--pixel);
-  background: #fff;
-  color: var(--deep);
-  box-shadow: 3px 3px 0 var(--shadow);
-}
-
-/* ── 天空 ── */
+/* ───────── 首屏：淡天空、插畫主視覺 ───────── */
 
 .sky {
   position: relative;
-  min-height: max(100svh, 760px);
+  min-height: clamp(640px, 100svh, 1040px);
   display: grid;
-  place-items: center;
-  padding: 96px 16px 240px;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'top top top'
+    'kv kv kv'
+    'weather scroll hint';
+  align-items: end;
+  gap: 24px;
+  padding: 0 clamp(16px, 4vw, 48px) 56px;
+  background: var(--sky);
   overflow: hidden;
   cursor: crosshair;
 }
 
-.weather {
+/* 底部一排白色圓弧，像蕾絲邊，接到下面的白紙 */
+.sky::after {
+  content: '';
   position: absolute;
-  top: 24px;
-  left: 24px;
-  z-index: 2;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 4px 4px 0 var(--shadow);
+  inset: auto 0 0;
+  height: 18px;
+  background: radial-gradient(circle at 50% 100%, var(--paper) 15px, transparent 16px) 0 0 / 34px 18px repeat-x;
+  pointer-events: none;
 }
 
+.topbar {
+  grid-area: top;
+  align-self: start;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-top: 20px;
+  cursor: default;
+}
+
+.topbar-mark {
+  font-size: 1.375rem;
+  font-weight: 900;
+  color: var(--orange-deep);
+  text-decoration: none;
+}
+
+.topbar ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.topbar ul a {
+  display: block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.topbar ul a:hover {
+  background: var(--paper);
+}
+
+/* 可以戳的雲 */
 .cloud {
   position: absolute;
+  z-index: 1;
   padding: 0;
   border: 0;
+  border-radius: 40px;
   background: none;
-  line-height: 0;
   cursor: pointer;
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  transition: scale 0.3s var(--settle);
 }
-.cloud:hover svg,
-.cloud:focus-visible svg {
-  filter: brightness(1.05) drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+
+.cloud:hover {
+  scale: 1.06;
 }
-.cloud:focus-visible {
-  outline: 3px dashed #fff;
-  outline-offset: 4px;
-}
+
 .cloud:active {
-  scale: 0.97;
+  scale: 0.94;
 }
-.cloud-big {
-  bottom: -100px;
-  left: 50%;
-  translate: -50% 0;
-  animation: bob 9s ease-in-out infinite;
+
+.cloud svg {
+  display: block;
+  height: auto;
 }
-.cloud-left {
-  top: 42%;
-  left: -36px;
-  animation: drift 40s linear infinite alternate;
+
+.cloud-body {
+  fill: var(--paper);
 }
-.cloud-right {
-  top: 38%;
+
+.cloud-shade {
+  fill: var(--sky-deep);
+}
+
+.cloud-a {
+  top: 24%;
+  left: 5%;
+}
+
+.cloud-b {
+  top: 14%;
   right: 7%;
-  animation: drift 55s linear infinite alternate-reverse;
 }
 
-@keyframes bob {
-  50% {
-    translate: -50% -10px;
-  }
-}
-@keyframes drift {
-  to {
-    transform: translateX(120px);
-  }
+.cloud-c {
+  bottom: 24%;
+  right: 10%;
 }
 
-.sky-text {
+/*
+ * 主視覺：白邊插畫卡壓在超大字標「Camila」的左半邊，i 的點是一朵雛菊。
+ * 全部尺寸都跟著 --wm（字標字級）走，卡片永遠蓋住「Cam」、露出「ila」。
+ */
+.kv {
+  --wm: clamp(5.5rem, min(17vw, 28svh), 16rem);
+  grid-area: kv;
+  align-self: center;
+  justify-self: center;
   position: relative;
-  z-index: 1;
-  max-width: 560px;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  text-align: center;
+  width: calc(var(--wm) * 3.2);
+  max-width: 100%;
+  margin: 8px 0 16px;
 }
 
-.avatar-frame {
+.kv-card {
   position: relative;
+  z-index: 2;
+  width: calc(var(--wm) * 1.85);
+  margin: 0;
+  padding: 12px;
+  border-radius: 24px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  rotate: -2.5deg;
+  animation: settle 0.9s var(--settle) both;
+}
+
+@keyframes settle {
+  from {
+    rotate: -9deg;
+    scale: 0.94;
+  }
 }
 
 .avatar {
-  width: 148px;
-  height: 148px;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.avatar-empty {
   display: grid;
   place-items: center;
-  object-fit: cover;
-  border: 6px solid #fff;
-  box-shadow: 8px 8px 0 var(--shadow);
-  background: var(--peach);
-  color: var(--deep);
-  font: 64px var(--pixel);
+  background: var(--orange);
+  color: var(--paper);
+  font-size: 8rem;
+  font-weight: 900;
 }
 
-.sparkle {
+/* 紙膠帶：橘白、粉白格紋 */
+.tape {
   position: absolute;
-  animation: twinkle 1.8s steps(2) infinite;
-}
-@keyframes twinkle {
-  50% {
-    opacity: 0.3;
-  }
-}
-.sparkle-1 {
   top: -14px;
-  right: -22px;
-  width: 20px;
-  height: 20px;
-  color: #fff;
-}
-.sparkle-2 {
-  bottom: 18px;
-  left: -26px;
-  color: var(--peach);
-  animation-delay: 0.9s;
-}
-
-.sky h1 {
-  margin: 0;
-  font: 88px/1 var(--pixel);
-  letter-spacing: 6px;
-  color: #fff;
-  text-shadow:
-    3px 3px 0 var(--sky),
-    6px 6px 0 var(--shadow);
+  width: 112px;
+  height: 30px;
+  border-radius: 3px;
+  opacity: 0.92;
+  --check: rgb(240 122 60 / 0.55);
+  background:
+    linear-gradient(90deg, var(--check) 50%, transparent 0) 0 0 / 12px 12px,
+    linear-gradient(var(--check) 50%, transparent 0) 0 0 / 12px 12px,
+    #fff6f1;
 }
 
-/* 自我介紹：從大頭貼冒出來的對話框 */
+.tape-left {
+  left: 22px;
+  rotate: -9deg;
+  --check: rgb(247 178 170 / 0.8);
+}
+
+.tape-right {
+  right: 22px;
+  rotate: 7deg;
+}
+
+.kv-daisy,
+.kv-star {
+  position: absolute;
+  pointer-events: none;
+}
+
+.kv-daisy-1 {
+  top: -26px;
+  left: calc(var(--wm) * 1.7);
+  z-index: 3;
+}
+
+.kv-daisy-2 {
+  top: 22%;
+  left: calc(var(--wm) * 2.2);
+}
+
+.kv-star {
+  color: var(--paper);
+}
+
+.kv-star-1 {
+  top: 8%;
+  left: calc(var(--wm) * 2.6);
+}
+
+.kv-star-2 {
+  top: 16%;
+  left: calc(var(--wm) * 2.45);
+}
+
+.wordmark {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  margin: calc(var(--wm) * -0.16) 0 0;
+  font-size: var(--wm);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--orange);
+  -webkit-text-stroke: 0.035em var(--ink);
+  paint-order: stroke fill;
+}
+
+/* 字標外圈的白色貼紙邊 */
+.wordmark::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--paper);
+  -webkit-text-stroke: 0.11em var(--paper);
+  filter: drop-shadow(0 8px 14px rgb(110 52 22 / 0.25));
+}
+
+.wordmark-i {
+  position: relative;
+}
+
+.wordmark-daisy {
+  position: absolute;
+  top: 0.04em;
+  left: 50%;
+  width: 0.4em;
+  height: 0.4em;
+  translate: -50% 0;
+}
+
+.wordmark-daisy .daisy-petal {
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
 .intro {
   position: relative;
-  margin: 10px 0 0;
-  padding: 12px 22px;
-  font: 19px/1.6 var(--pixel);
-  color: var(--deep);
-  background: #fff;
-  box-shadow:
-    0 0 0 3px var(--shadow),
-    5px 5px 0 3px var(--shadow);
+  align-self: flex-end;
+  max-width: 100%;
+  margin: 12px 0 0;
+  padding: 10px 22px 10px 40px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  word-break: keep-all;
+  rotate: -1deg;
 }
-.intro::before {
-  content: '';
+
+.intro-ribbon {
   position: absolute;
-  top: -9px;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  translate: -50% 0;
-  background: #fff;
-  box-shadow: -3px -3px 0 var(--shadow);
+  top: -10px;
+  left: -26px;
+}
+
+.ribbon-loop,
+.ribbon-knot,
+.ribbon-tail {
+  fill: var(--ink);
+  stroke: var(--paper);
+  stroke-width: 1.5;
+}
+
+.ribbon-tail-light {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.weather,
+.hint,
+.scroll-hint {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.weather {
+  grid-area: weather;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.hint {
+  grid-area: hint;
+  justify-self: end;
+  color: var(--ink-soft);
+}
+
+.wish-count {
+  color: var(--orange-deep);
+  font-weight: 700;
 }
 
 .scroll-hint {
-  margin-top: 14px;
-  animation: hop 1.4s steps(2) infinite;
-}
-@keyframes hop {
-  50% {
-    translate: 0 6px;
-  }
+  grid-area: scroll;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 700;
+  text-decoration: none;
 }
 
-/* 點雲、點天空冒出的對話框 */
+/* 彩蛋：漫畫對話框和流星 */
 .bubble {
   position: absolute;
   z-index: 5;
-  translate: -50% calc(-100% - 12px);
-  padding: 6px 12px;
+  translate: -50% calc(-100% - 18px);
+  padding: 10px 20px;
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  font-weight: 700;
   white-space: nowrap;
-  font: 15px var(--pixel);
-  color: var(--deep);
-  background: #fff;
-  box-shadow:
-    0 0 0 3px var(--shadow),
-    4px 4px 0 3px var(--shadow);
   pointer-events: none;
-  animation: pop 0.25s steps(3);
+  animation: pop 0.45s var(--settle) both;
 }
+
+/* 對話框的尖尾巴：外圈黑線、裡面白色 */
+.bubble::before,
 .bubble::after {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: -9px;
-  width: 10px;
-  height: 10px;
-  translate: -50% 0;
-  background: #fff;
-  box-shadow: 3px 3px 0 var(--shadow);
+  border-style: solid;
+  border-color: transparent;
 }
+
+.bubble::before {
+  bottom: -17px;
+  translate: -30% 0;
+  border-width: 17px 4px 0 14px;
+  border-top-color: var(--ink);
+}
+
+.bubble::after {
+  bottom: -10px;
+  translate: -24% 0;
+  border-width: 14px 2px 0 9px;
+  border-top-color: var(--paper);
+}
+
 @keyframes pop {
   from {
     scale: 0.6;
+    opacity: 0;
   }
 }
 
-/* 許願流星：從左下往點擊位置劃過去 */
 .wish-meteor {
   position: absolute;
   z-index: 4;
-  width: 160px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, #fff 80%, var(--peach));
-  transform-origin: right center;
-  translate: -100% 0;
-  rotate: -25deg;
+  color: var(--paper);
   pointer-events: none;
-  animation: shoot 0.9s ease-out forwards;
+  animation: fall 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-@keyframes shoot {
+
+.wish-meteor::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 14px;
+  width: 90px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--paper), transparent);
+  rotate: -35deg;
+  transform-origin: left center;
+}
+
+@keyframes fall {
   from {
+    translate: 90px -64px;
     opacity: 1;
-    translate: calc(-100% - 160px) 75px;
   }
   to {
+    translate: -9px -9px;
     opacity: 0;
-    translate: -100% 0;
   }
 }
 
-.hint {
-  position: absolute;
-  right: 24px;
-  bottom: 24px;
-  z-index: 2;
-  margin: 0;
-  font-size: 14px;
-}
+/* ───────── 段落 ───────── */
 
-/* ── 下半部：像素視窗 ── */
-
-.content {
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 72px 16px 40px;
-  display: grid;
-  gap: 64px;
-}
-
-.window {
+.section {
   position: relative;
-  background: #fff;
-  box-shadow:
-    0 0 0 4px var(--shadow),
-    10px 10px 0 4px var(--shadow);
+  padding: clamp(80px, 10vw, 128px) max(clamp(16px, 5vw, 64px), (100% - 1080px) / 2);
 }
 
-/* 小雲插畫：寬螢幕時靠在視窗外側，壓住一點視窗的角 */
-.window-art {
-  position: absolute;
-  z-index: 1;
-  top: -24px;
-  width: 220px;
-  height: auto;
-  pointer-events: none;
-}
-.window-art-left {
-  right: calc(100% - 20px);
-}
-.window-art-right {
-  left: calc(100% - 20px);
-}
-
-/* 兩側放不下時，縮小坐在視窗右上角 */
-@media (max-width: 1360px) {
-  .content {
-    gap: 96px;
-  }
-  .window-art {
-    top: auto;
-    bottom: calc(100% - 8px);
-    width: auto;
-    height: 88px;
-  }
-  .window-art-left,
-  .window-art-right {
-    left: auto;
-    right: 12px;
-  }
-}
-
-.window-bar {
+.section-head h2 {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
-  background: var(--deep);
-  color: #fff;
-  border-bottom: 4px solid var(--shadow);
-}
-.window-bar h2 {
   margin: 0;
-  font: 22px var(--pixel);
-}
-.window-dots {
-  margin-left: auto;
-  display: flex;
-  gap: 6px;
-}
-.window-dots span {
-  width: 12px;
-  height: 12px;
-  background: #fff;
-}
-.window-dots span:first-child {
-  background: var(--peach);
-}
-.window-dots span:nth-child(2) {
-  background: var(--light);
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
+  font-weight: 900;
+  line-height: 1.2;
 }
 
-.window-body {
-  padding: 28px;
-  display: grid;
-  gap: 20px;
+.section-head h2 svg {
+  flex: none;
 }
 
 .caption {
-  margin: 0;
-  font-size: 15px;
-  color: var(--muted);
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+}
+
+.daisy-petal {
+  fill: var(--orange);
+}
+
+.daisy-heart {
+  fill: var(--paper);
+}
+
+/* 最近沉迷：裁切白邊的貼紙 */
+.section-hobbies {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
 }
 
 .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px 26px;
   margin: 0;
   padding: 0;
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
 }
+
 .tags li {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 20px;
-  font: 18px var(--pixel);
-  color: var(--deep);
-  background: var(--pale);
+  padding: 10px 26px 10px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
   box-shadow:
-    0 0 0 3px var(--shadow),
-    4px 4px 0 3px var(--shadow);
+    0 0 0 6px var(--paper),
+    var(--shadow);
+  font-size: 1.25rem;
+  font-weight: 700;
+  rotate: -2deg;
 }
 
-.tv-screen {
-  fill: var(--peach);
+.tags li:nth-child(even) {
+  rotate: 1.5deg;
+}
+
+.tag-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+}
+
+/* 作品：一整片淡橘，上緣是網點 */
+.section-works {
+  background: var(--orange-soft);
+}
+
+.section-works::before,
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: -18px 0 auto;
+  height: 18px;
+  background: radial-gradient(circle at 50% 100%, var(--scallop) 15px, transparent 16px) 0 0 / 34px 18px repeat-x;
+}
+
+.section-works::before {
+  --scallop: var(--orange-soft);
+}
+
+.section-works::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 180px;
+  background: radial-gradient(circle, rgb(240 122 60 / 0.45) 1.6px, transparent 1.9px) 0 0 / 11px 11px;
+  mask-image: linear-gradient(to bottom, #000, transparent);
+  pointer-events: none;
+}
+
+.section-works .section-head {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 56px;
+  text-align: center;
+}
+
+.section-works .section-head h2 {
+  justify-content: center;
 }
 
 .works {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 28px;
+  position: relative;
+  z-index: 1;
 }
 
 .work {
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  box-shadow:
-    0 0 0 3px var(--shadow),
-    6px 6px 0 3px var(--shadow);
-}
-.work-cover {
-  position: relative;
-  height: 168px;
   display: grid;
-  place-items: center;
-  overflow: hidden;
-  border-bottom: 3px solid var(--shadow);
-  background: linear-gradient(#1f75e0 0 33%, #4d9aee 33% 66%, var(--light) 66%);
-}
-.work-cover img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.work-date {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 2px 8px;
-  font: 13px var(--pixel);
-  color: var(--deep);
-  background: #fff;
-}
-.work-text {
-  flex: 1;
-  padding: 18px 20px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.work h3 {
-  margin: 0;
-  font: 24px var(--pixel);
-  color: var(--deep);
-}
-.work p {
-  margin: 0 0 10px;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: clamp(32px, 5vw, 64px);
 }
 
-.work-next {
-  min-height: 300px;
-  padding: 24px;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 14px;
-  border: 3px dashed #8cb3e0;
-  background: #f4f9fe;
-  font: 16px var(--pixel);
-  color: var(--muted);
-  text-align: center;
+.work-cover {
+  position: relative;
+  padding: 12px;
+  border-radius: 22px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  rotate: -1.5deg;
 }
-.work-next svg {
-  opacity: 0.6;
+
+.work-cover img,
+.work-cover-default {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* 沒有封面時：橘白格紋上貼著作品名、雲和雛菊 */
+.work-cover-default {
+  --check: rgb(240 122 60 / 0.32);
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, var(--check) 50%, transparent 0) 0 0 / 36px 36px,
+    linear-gradient(var(--check) 50%, transparent 0) 0 0 / 36px 36px,
+    var(--paper);
+}
+
+.cover-title {
+  position: relative;
+  z-index: 1;
+  padding: 6px 26px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 900;
+  rotate: -3deg;
+}
+
+.cover-daisy {
+  position: absolute;
+  top: 14%;
+  right: 12%;
+}
+
+.work-text h3 {
+  margin: 0 0 6px;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.work-text p {
+  max-width: 32em;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.work-date {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 2px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
 }
 
 .buttons {
-  margin-top: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-top: 24px;
 }
-.buttons a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 8px 16px;
-  font: 16px var(--pixel);
-  text-decoration: none;
-}
-.button-solid {
-  color: #fff;
-  background: var(--deep);
-  box-shadow: 3px 3px 0 var(--shadow);
-}
+
+.button-solid,
 .button-outline {
-  color: var(--deep);
-  background: #fff;
-  box-shadow:
-    0 0 0 3px var(--shadow),
-    3px 3px 0 3px var(--shadow);
+  padding: 12px 26px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    translate 0.3s var(--settle),
+    box-shadow 0.3s;
 }
-.button-solid:hover {
-  translate: 1px 1px;
-  box-shadow: 2px 2px 0 var(--shadow);
+
+.button-solid {
+  background: var(--orange);
 }
+
+.button-outline {
+  background: var(--paper);
+}
+
+.button-solid:hover,
 .button-outline:hover {
-  translate: 1px 1px;
-  box-shadow:
-    0 0 0 3px var(--shadow),
-    2px 2px 0 3px var(--shadow);
+  translate: 0 -3px;
+  box-shadow: var(--shadow);
+}
+
+.work-next {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: fit-content;
+  margin: 56px auto 0;
+  padding: 8px 26px 8px 16px;
+  border: 2px dashed var(--orange);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--orange-deep);
+  font-weight: 700;
+}
+
+/* 紙飛機：標題放在漫畫對話框裡 */
+.section-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+}
+
+.section-links .section-head h2 {
+  position: relative;
+  width: fit-content;
+  padding: 18px 40px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.section-links .section-head h2::before,
+.section-links .section-head h2::after {
+  content: '';
+  position: absolute;
+  left: 34%;
+  border-style: solid;
+  border-color: transparent;
+}
+
+/* 尾巴：黑色楔形接在橢圓外框上，白色楔形蓋掉接點的外框線，兩者連成一體 */
+.section-links .section-head h2::before {
+  bottom: -22px;
+  border-width: 24px 4px 0 18px;
+  border-top-color: var(--ink);
+}
+
+.section-links .section-head h2::after {
+  bottom: -14px;
+  translate: 5px 0;
+  border-width: 20px 2px 0 11px;
+  border-top-color: var(--paper);
+}
+
+.section-links .caption {
+  margin: 30px 0 0 12px;
+}
+
+.section-icon {
+  flex: none;
+}
+
+.plane-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--orange);
 }
 
 .links {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
+
 .links a {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 14px 20px;
-  font: 19px var(--pixel);
+  gap: 18px;
+  min-width: min(300px, 100%);
+  padding: 16px 32px 16px 16px;
+  border: 2px solid var(--ink);
+  border-radius: 28px;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 6px var(--paper),
+    var(--shadow);
   text-decoration: none;
-  color: var(--deep);
-  background: var(--pale);
-  box-shadow:
-    0 0 0 3px var(--shadow),
-    5px 5px 0 3px var(--shadow);
+  rotate: -1.5deg;
+  transition:
+    translate 0.3s var(--settle),
+    background-color 0.2s;
 }
+
+.links a:nth-child(even) {
+  rotate: 1.2deg;
+}
+
 .links a:hover {
-  translate: 1px 1px;
-  box-shadow:
-    0 0 0 3px var(--shadow),
-    4px 4px 0 3px var(--shadow);
+  translate: 0 -3px;
+  background: var(--orange-soft);
 }
+
+.link-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--orange);
+  transition: rotate 0.4s var(--settle);
+}
+
+.links a:hover .link-icon {
+  rotate: -14deg;
+}
+
 .link-text {
   display: flex;
   flex-direction: column;
-}
-.link-handle {
-  font: 14px var(--body);
-  color: var(--muted);
-}
-.link-icon {
-  flex: none;
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: var(--deep);
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.35;
 }
 
-/* 頁尾：天空的盡頭 */
-.footer {
-  display: flex;
-  justify-content: center;
-  padding: 32px 16px 64px;
-  font: 16px var(--pixel);
-  color: var(--shadow);
+.link-handle {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink-soft);
 }
+
+/* 頁尾：最後收在一整片頭髮橘，雛菊配緞帶 */
+.footer {
+  --scallop: var(--orange);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  margin-top: 18px;
+  padding: 56px 16px 72px;
+  background: var(--orange);
+  font-weight: 700;
+  text-align: center;
+}
+
 .footer p {
   margin: 0;
 }
 
-/* ── 手機 ── */
+.footer-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
 
-@media (max-width: 720px) {
-  .sky h1 {
-    font-size: 60px;
-  }
-  .intro {
-    font-size: 17px;
-  }
-  .cloud-left {
-    top: 52%;
-  }
-  .cloud-right {
-    top: 14%;
-    right: -40px;
-  }
-  .cloud-right svg {
-    width: 144px;
-    height: auto;
-  }
-  /* 手機上提示會壓在雲上，改成置中 */
-  .hint {
-    right: auto;
-    left: 50%;
-    bottom: 72px;
-    translate: -50% 0;
-    width: max-content;
-    max-width: calc(100% - 32px);
+.footer-ribbon {
+  position: absolute;
+  top: 26px;
+  z-index: -0;
+}
+
+.footer-daisy {
+  position: relative;
+  z-index: 1;
+}
+
+.footer-daisy .daisy-petal {
+  fill: var(--paper);
+}
+
+.footer-daisy .daisy-heart {
+  fill: var(--orange-deep);
+}
+
+/* ───────── 手機 ───────── */
+
+@media (max-width: 760px) {
+  .sky {
+    min-height: auto;
+    padding-bottom: 48px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'top'
+      'kv'
+      'weather'
+      'hint'
+      'scroll';
+    justify-items: center;
+    gap: 12px;
     text-align: center;
   }
-  .window-body {
-    padding: 20px;
+
+  .topbar {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .topbar ul a {
+    padding: 4px 10px;
+    font-size: 0.9375rem;
+  }
+
+  .kv {
+    --wm: min(26vw, 7.5rem);
+    width: 100%;
+    margin: 76px 0 8px;
+    align-items: center;
+  }
+
+  .kv-card {
+    width: min(84vw, 400px);
+  }
+
+  .wordmark {
+    margin-top: -0.06em;
+  }
+
+  .intro {
+    align-self: center;
+    margin-top: 16px;
+    border-radius: 22px;
+    text-align: center;
+  }
+
+  .intro-ribbon {
+    left: -14px;
+    top: -18px;
+  }
+
+  .kv-daisy-1 {
+    top: -24px;
+    left: auto;
+    right: 2vw;
+  }
+
+  .kv-daisy-2,
+  .kv-star-1,
+  .kv-star-2 {
+    display: none;
+  }
+
+  .weather,
+  .hint {
+    justify-self: center;
+  }
+
+  .cloud {
+    z-index: 3;
+  }
+
+  .cloud-a {
+    top: 96px;
+    left: 4px;
+  }
+
+  .cloud-a svg {
+    width: 96px;
+  }
+
+  .cloud-b {
+    top: 90px;
+    right: 4px;
+  }
+
+  .cloud-b svg {
+    width: 84px;
+  }
+
+  .cloud-c {
+    top: 112px;
+    right: auto;
+    bottom: auto;
+    left: 44%;
+  }
+
+  .cloud-c svg {
+    width: 64px;
+  }
+
+  .section-hobbies,
+  .section-links,
+  .work {
+    grid-template-columns: 1fr;
+  }
+
+  .section-hobbies,
+  .section-links {
+    gap: 28px;
+  }
+
+  .section-links .section-head h2 {
+    padding: 14px 28px;
   }
 }

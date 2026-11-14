@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-15T00:00:00Z",
+  "title": "Design System: Camila",
+  "extensions": {
+    "colorMeta": {
+      "orange": { "role": "primary", "displayName": "頭髮橘 Hair Orange", "canonical": "#f07a3c", "tonalRamp": ["#3d1708", "#6b2a10", "#9a3d17", "#c95a26", "#f07a3c", "#f6a378", "#fbcbb0", "#fef0e7"] },
+      "orange-deep": { "role": "primary", "displayName": "深橘 Ember Orange", "canonical": "#b6461c", "tonalRamp": ["#2e1006", "#541d0b", "#7b2b12", "#b6461c", "#d4693b", "#e89570", "#f4c2a8", "#fbe7dc"] },
+      "orange-soft": { "role": "neutral", "displayName": "淡橘紙 Peach Paper", "canonical": "#fde4d6", "tonalRamp": ["#3f2418", "#6b4434", "#9a6d58", "#c99a82", "#ebc2ab", "#fde4d6", "#fef0e8", "#fff9f5"] },
+      "ink": { "role": "neutral", "displayName": "暖黑 Ribbon Ink", "canonical": "#2a1d18", "tonalRamp": ["#140d0a", "#2a1d18", "#43322b", "#5c4a42", "#7d6b63", "#a3938c", "#cdc2bd", "#efe9e6"] },
+      "ink-soft": { "role": "neutral", "displayName": "暖灰褐 Soft Ink", "canonical": "#5c4a42", "tonalRamp": ["#1c1411", "#2f231e", "#43342e", "#5c4a42", "#7d6b63", "#a3938c", "#cdc2bd", "#efe9e6"] },
+      "pink": { "role": "secondary", "displayName": "臉頰粉 Cheek Pink", "canonical": "#f7b2aa", "tonalRamp": ["#3d1915", "#6b302a", "#9a4c44", "#cb7a70", "#f7b2aa", "#f9cac4", "#fce0dd", "#fef3f1"] },
+      "paper": { "role": "neutral", "displayName": "紙白 Paper", "canonical": "#ffffff", "tonalRamp": ["#262626", "#474747", "#6b6b6b", "#919191", "#b8b8b8", "#dcdcdc", "#f2f2f2", "#ffffff"] },
+      "sky": { "role": "tertiary", "displayName": "淡天空 Pale Sky", "canonical": "#d5ebf7", "tonalRamp": ["#0f2a3a", "#1e4760", "#336a8a", "#5690b2", "#86b6d4", "#a9d0ea", "#d5ebf7", "#eef7fc"] },
+      "sky-deep": { "role": "tertiary", "displayName": "天空陰影 Sky Shade", "canonical": "#a9d0ea", "tonalRamp": ["#0f2a3a", "#1e4760", "#336a8a", "#5690b2", "#86b6d4", "#a9d0ea", "#d5ebf7", "#eef7fc"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "只用在首屏「Camila」字標：橘填色、暖黑描邊、紙白貼紙外圈，i 的點是雛菊。" },
+      "headline": { "displayName": "Headline", "purpose": "段落大標，前面接一個小插畫。" },
+      "title": { "displayName": "Title", "purpose": "作品名稱與預設封面標題膠囊。" },
+      "body": { "displayName": "Body", "purpose": "所有內文；導覽、按鈕、貼紙改用 700。" },
+      "label": { "displayName": "Label", "purpose": "日期膠囊，tabular-nums。" }
+    },
+    "shadows": [
+      { "name": "paper-lift", "value": "0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12)", "purpose": "紙片投影：插畫卡、封面卡、貼紙、按鈕 hover（--shadow）。" },
+      { "name": "sticker-edge", "value": "0 0 0 6px #ffffff, 0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12)", "purpose": "貼紙裁切白邊加紙片投影：興趣貼紙、連結貼紙。" },
+      { "name": "wordmark-sticker", "value": "drop-shadow(0 8px 14px rgb(110 52 22 / 0.25))", "purpose": "只用在字標的白色外圈（filter）。" }
+    ],
+    "motion": [
+      { "name": "settle", "value": "cubic-bezier(0.34, 1.4, 0.64, 1)", "purpose": "唯一的動態語法：柔和回彈落定。卡片進場 0.9s、雲縮放 0.3s、按鈕浮起 0.3s、對話框彈出 0.45s、圖示旋轉 0.4s。" },
+      { "name": "meteor-fall", "value": "cubic-bezier(0.16, 1, 0.3, 1) 0.9s", "purpose": "只用在點天空的流星彩蛋。" }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "760px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "作品的主要行動（偷看原始碼）。",
+      "html": "<a class=\"ds-btn-solid\" href=\"#\">偷看原始碼</a>",
+      "css": ".ds-btn-solid { display: inline-block; padding: 12px 26px; border: 2px solid #2a1d18; border-radius: 999px; background: #f07a3c; color: #2a1d18; font-family: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif; font-weight: 700; text-decoration: none; transition: translate 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s; } .ds-btn-solid:hover { translate: 0 -3px; box-shadow: 0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12); } .ds-btn-solid:focus-visible { outline: 3px solid #b6461c; outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "次要行動（飛過去看看）。",
+      "html": "<a class=\"ds-btn-outline\" href=\"#\">飛過去看看</a>",
+      "css": ".ds-btn-outline { display: inline-block; padding: 12px 26px; border: 2px solid #2a1d18; border-radius: 999px; background: #ffffff; color: #2a1d18; font-family: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif; font-weight: 700; text-decoration: none; transition: translate 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s; } .ds-btn-outline:hover { translate: 0 -3px; box-shadow: 0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12); } .ds-btn-outline:focus-visible { outline: 3px solid #b6461c; outline-offset: 3px; }"
+    },
+    {
+      "name": "Top Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "首屏頂部的小字標與三個錨點。",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-mark\" href=\"#\">Camila</a><ul><li><a href=\"#\">最近沉迷</a></li><li><a href=\"#\">雲上的作品</a></li><li><a href=\"#\">丟紙飛機給我</a></li></ul></nav>",
+      "css": ".ds-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding: 20px; background: #d5ebf7; color: #2a1d18; font-family: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif; } .ds-nav-mark { font-size: 1.375rem; font-weight: 900; color: #b6461c; text-decoration: none; } .ds-nav ul { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; } .ds-nav ul a { display: block; padding: 6px 14px; border-radius: 999px; font-weight: 700; color: inherit; text-decoration: none; transition: background-color 0.2s; } .ds-nav ul a:hover { background: #ffffff; } .ds-nav a:focus-visible { outline: 3px solid #b6461c; outline-offset: 3px; }"
+    },
+    {
+      "name": "Hobby Sticker",
+      "kind": "chip",
+      "refersTo": "tag-sticker",
+      "description": "興趣貼紙：白邊裁切、暖黑描邊、微旋轉。",
+      "html": "<span class=\"ds-tag\"><span class=\"ds-tag-icon\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m8 7-5 5 5 5\"/><path d=\"m16 7 5 5-5 5\"/><path d=\"m13.5 5-3 14\"/></svg></span>Vibe coding</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; gap: 12px; padding: 10px 26px 10px 10px; border: 2px solid #2a1d18; border-radius: 999px; background: #ffffff; color: #2a1d18; box-shadow: 0 0 0 6px #ffffff, 0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12); font-family: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif; font-size: 1.25rem; font-weight: 700; rotate: -2deg; } .ds-tag-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #fde4d6; color: #b6461c; }"
+    },
+    {
+      "name": "Illustration Card",
+      "kind": "card",
+      "refersTo": "illustration-card",
+      "description": "白邊插畫卡加紙膠帶，用於大頭貼與作品封面。",
+      "html": "<figure class=\"ds-card\"><div class=\"ds-card-art\"></div><span class=\"ds-tape\"></span></figure>",
+      "css": ".ds-card { position: relative; width: 240px; margin: 24px; padding: 12px; border-radius: 24px; background: #ffffff; box-shadow: 0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12); rotate: -2.5deg; } .ds-card-art { aspect-ratio: 4 / 3; border-radius: 12px; background: linear-gradient(90deg, rgb(240 122 60 / 0.32) 50%, transparent 0) 0 0 / 36px 36px, linear-gradient(rgb(240 122 60 / 0.32) 50%, transparent 0) 0 0 / 36px 36px, #ffffff; } .ds-tape { position: absolute; top: -14px; left: 22px; width: 112px; height: 30px; border-radius: 3px; opacity: 0.92; rotate: -9deg; background: linear-gradient(90deg, rgb(247 178 170 / 0.8) 50%, transparent 0) 0 0 / 12px 12px, linear-gradient(rgb(247 178 170 / 0.8) 50%, transparent 0) 0 0 / 12px 12px, #fff6f1; }"
+    },
+    {
+      "name": "Link Sticker",
+      "kind": "custom",
+      "refersTo": "link-sticker",
+      "description": "社群連結貼紙，橘色圓形紙飛機圖示。",
+      "html": "<a class=\"ds-link\" href=\"#\"><span class=\"ds-link-icon\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21.5 2.5 10.5 13.5\"/><path d=\"M21.5 2.5 14.5 21.5l-4-8-8-4 19-7z\"/></svg></span><span class=\"ds-link-text\">Threads<span>@feroula09</span></span></a>",
+      "css": ".ds-link { display: flex; align-items: center; gap: 18px; width: 300px; margin: 12px; padding: 16px 32px 16px 16px; border: 2px solid #2a1d18; border-radius: 28px; background: #ffffff; color: #2a1d18; box-shadow: 0 0 0 6px #ffffff, 0 10px 24px -8px rgb(110 52 22 / 0.28), 0 2px 6px rgb(110 52 22 / 0.12); font-family: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif; text-decoration: none; rotate: -1.5deg; transition: translate 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), background-color 0.2s; } .ds-link:hover { translate: 0 -3px; background: #fde4d6; } .ds-link:focus-visible { outline: 3px solid #b6461c; outline-offset: 3px; } .ds-link-icon { display: grid; place-items: center; flex: none; width: 56px; height: 56px; border-radius: 50%; background: #f07a3c; transition: rotate 0.4s cubic-bezier(0.34, 1.4, 0.64, 1); } .ds-link:hover .ds-link-icon { rotate: -14deg; } .ds-link-text { display: flex; flex-direction: column; font-size: 1.25rem; font-weight: 900; line-height: 1.35; } .ds-link-text span { font-size: 0.9375rem; font-weight: 500; color: #5c4a42; }"
+    },
+    {
+      "name": "Manga Speech Bubble",
+      "kind": "custom",
+      "refersTo": "speech-bubble",
+      "description": "橢圓漫畫對話框，外黑內白的尖尾；用於彩蛋氣泡與段落標題。",
+      "html": "<div class=\"ds-bubble\">噗～</div>",
+      "css": ".ds-bubble { position: relative; display: inline-block; margin: 16px 16px 32px; padding: 10px 20px; border: 2.5px solid #2a1d18; border-radius: 50%; background: #ffffff; color: #2a1d18; font-family: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif; font-weight: 700; white-space: nowrap; } .ds-bubble::before, .ds-bubble::after { content: ''; position: absolute; left: 50%; border-style: solid; border-color: transparent; } .ds-bubble::before { bottom: -17px; translate: -30% 0; border-width: 17px 4px 0 14px; border-top-color: #2a1d18; } .ds-bubble::after { bottom: -10px; translate: -24% 0; border-width: 14px 2px 0 9px; border-top-color: #ffffff; }"
+    },
+    {
+      "name": "Ink Label Pill",
+      "kind": "chip",
+      "refersTo": "date-pill",
+      "description": "暖黑膠囊：日期與自我介紹標籤條。",
+      "html": "<time class=\"ds-pill\">2026.11.05</time>",
+      "css": ".ds-pill { display: inline-block; padding: 2px 14px; border-radius: 999px; background: #2a1d18; color: #ffffff; font-family: 'Chiron GoRound TC', 'Noto Sans TC', system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "插畫本與攤位小物",
+    "overview": "這是一位日系插畫同人作者的個人小站。橘髮大頭貼是主視覺插畫（KV），其他所有東西都像她在同人場攤位上擺的小物：白邊插畫卡用紙膠帶貼住、貼紙裁出白色外框、漫畫對話框、緞帶與雛菊。版面不是格線上的一排等大卡片，而是被「親手擺上去」的物件，每件都帶一點旋轉。\n\n色彩全部取自大頭貼本身：頭髮橘、緞帶的暖黑、臉頰粉、白襯衫的紙白，加上首屏一片柔和的淡天空讓雲有地方住。整頁由天空開始，經過白紙、淡橘作品區，最後收在一整片頭髮橘。線條語言是動漫上色的暖黑描邊（字標、對話框、貼紙外框），不是冷灰或純黑。\n\n動態只有一種語法：柔和回彈的「落定」（`cubic-bezier(0.34, 1.4, 0.64, 1)`）。卡片落定、雲被戳時縮放、按鈕浮起、對話框彈出，全部用這一條曲線；只有流星彩蛋用自己的劃落曲線。",
+    "keyCharacteristics": [
+      "一套圓體（Chiron GoRound TC）包辦所有字級，大標用 900 粗。",
+      "暖黑（ink）描邊是動漫線稿語言，用在字標、對話框、貼紙與按鈕外框。",
+      "物件微旋轉（-3deg 到 +1.5deg），相鄰物件左右交錯。",
+      "白色貼紙邊：`0 0 0 6px` 的紙白外圈加上暖色柔和陰影。",
+      "區塊之間以圓弧蕾絲邊（scallop）銜接，不用直線分隔。",
+      "只有一種動態曲線：回彈落定。"
+    ],
+    "rules": [
+      { "name": "The 取自大頭貼 Rule", "body": "新顏色只能從大頭貼插畫裡取；目前的九個 token 就是全部調色盤。灰色一律帶暖褐（ink / ink-soft），不用冷灰或 `#000`。", "section": "colors" },
+      { "name": "The 深橘讀字 Rule", "body": "頭髮橘（orange）在白底上只當色塊、圖形或大字；要當成小字閱讀時改用深橘（orange-deep）。", "section": "colors" },
+      { "name": "The 一套圓體 Rule", "body": "整站只用 Chiron GoRound TC。不加襯線體、等寬字或手寫字當「點綴」。", "section": "typography" },
+      { "name": "The 粗才可愛 Rule", "body": "標題一律 900。圓體在細字重下會變得空洞，失去貼紙感。", "section": "typography" },
+      { "name": "The 暖色陰影 Rule", "body": "陰影色一律是暖褐 `rgb(110 52 22 / …)`，柔和、有模糊。不用硬邊位移陰影。", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** 從大頭貼取色，九個 token 之外不新增顏色。",
+      "**Do** 讓物件帶 -3deg 到 +1.5deg 的微旋轉，相鄰物件交錯方向。",
+      "**Do** 用 2px 暖黑（ink）描邊當線稿；漫畫對話框與標題膠囊用 3px。",
+      "**Do** 用紙白外圈加暖色紙片投影（`--shadow`）表現貼紙與卡片。",
+      "**Do** 用圓弧蕾絲邊銜接不同底色的區塊。",
+      "**Do** 所有動態都用 `--settle` 回彈曲線，並在 `prefers-reduced-motion` 時全部關閉。",
+      "**Do** 白底上的小字橘色用 orange-deep。"
+    ],
+    "donts": [
+      "**Don't** 引入第二套字體；只用 Chiron GoRound TC。",
+      "**Don't** 用冷灰、純黑 `#000` 或冷色陰影。",
+      "**Don't** 用硬邊位移陰影或玻璃擬態。",
+      "**Don't** 把內容排成一排等大、無旋轉的卡片格線。",
+      "**Don't** 為物件新增 `--settle` 以外的動態曲線；唯一例外是點天空的流星彩蛋（`cubic-bezier(0.16, 1, 0.3, 1)`）。"
+    ]
+  }
+}
