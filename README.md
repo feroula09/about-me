@@ -1,6 +1,6 @@
 # about-me
 
-Camila 的像素風自我介紹網頁，給朋友看、好玩性質。
+Camila 的自我介紹網頁，日系插畫同人風，給朋友和工作夥伴看。
 
 🌤 線上網址：<https://camila.blog-camila.workers.dev/>
 
@@ -13,7 +13,7 @@ Camila 的像素風自我介紹網頁，給朋友看、好玩性質。
 - **雲上的作品**：手動挑選的作品（寫在 `src/content/works/`），依日期由新到舊排列
 - **丟紙飛機給我**：社群連結
 
-整頁背景是一張固定不動的像素天空插畫（直向螢幕換成直式那張），每個視窗旁邊還有一張原創角色「小雲」的插畫。這些圖是用 ChatGPT 生成的，畫小雲的新插畫時，可以拿 `docs/art/kumo-sheet.png` 當角色參考。
+首屏是淡天空藍，大頭貼像一張貼著紙膠帶的插畫卡當主視覺，名字壓在左下角。顏色都取自大頭貼（頭髮橘、緞帶黑、臉頰粉）；雲、雛菊、星星和小圖示都是 `src/Ornaments.tsx` 裡手寫的 SVG。
 
 ## 技術
 
@@ -49,7 +49,7 @@ npm run dev
 
 編輯 `src/content/profile.ts`：名字、自我介紹、興趣和大頭貼。
 
-每個興趣是一個標籤，`icon` 選填，決定標籤前面的像素小圖示（`code` 程式碼符號、`tv` 小電視，沒填就是十字星）：
+每個興趣是一個標籤，`icon` 選填，決定標籤前面的小圖示（`code` 程式碼符號、`tv` 小電視，沒填就是小星星）：
 
 ```ts
 { label: '看動漫', icon: 'tv' },
@@ -81,7 +81,7 @@ const work: Work = {
   date: '2026-11-05', // YYYY-MM-DD，用來排序
   github: 'https://github.com/...', // 選填，顯示「偷看原始碼」按鈕
   site: 'https://...', // 選填，顯示「飛過去看看」按鈕
-  // cover: 選填，封面圖放在同一個資料夾再 import 進來；沒有的話用預設的像素雲
+  // cover: 選填，封面圖放在同一個資料夾再 import 進來；沒有的話用預設的雲朵封面
 }
 
 export default work
@@ -96,13 +96,10 @@ src/
 ├── main.tsx            # 進入點，把 content 傳給 App
 ├── App.tsx             # 頁面主體：興趣、作品、社群連結
 ├── Sky.tsx             # 第一屏的天空與彩蛋
-├── PixelCloud.tsx      # 原創像素雲（SVG）
-├── PixelSparkle.tsx    # 像素十字星裝飾（SVG）
-├── HobbyIcon.tsx       # 興趣標籤的像素小圖示
+├── Ornaments.tsx       # 雲、雛菊、星星、紙飛機（SVG）
+├── HobbyIcon.tsx       # 興趣標籤的小圖示
 ├── index.css           # 全域樣式
 ├── App.css             # 頁面樣式
-├── assets/
-│   └── illustrations/  # 背景和小雲插畫（webp）
 ├── content/            # 所有頁面內容
 │   ├── types.ts
 │   ├── profile.ts
